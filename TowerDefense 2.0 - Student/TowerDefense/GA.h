@@ -13,7 +13,9 @@ public:
 	GA(const GA& var);
 	GA& operator=(const GA& var);
 
-	Generation Gens();
+	bool done;
+
+	Generation& CurGen();
 	void init();
 	void nextGen();
 

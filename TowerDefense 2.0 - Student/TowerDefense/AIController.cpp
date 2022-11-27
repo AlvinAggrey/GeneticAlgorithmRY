@@ -14,7 +14,7 @@ AIController::AIController()
 	m_gameBoard = nullptr;
 	m_Timer = nullptr;
 	m_gameState = nullptr;
-
+	ga = GA(10);
 }
 
 AIController::~AIController()
@@ -24,6 +24,31 @@ AIController::~AIController()
 
 void AIController::gameOver()
 {
+	int waveReached = m_gameState->getCurrentWave();
+	int healthLeft = m_gameState->getHealth();
+	int avgkillCount = m_gameState->getMonsterEliminated()/ waveReached;
+	//int tamsLeft = ;
+	int fitness = healthLeft + waveReached + avgkillCount;
+
+	ga.CurGen()[curChromIndex].m_fitness = fitness;
+	if (ga.done)
+	{
+		done = true;
+		return;
+	}
+
+	curChromIndex++;
+	if (ga.m_currentGen <= gen_Num)
+	{
+		done = true;
+	}
+	if (curChromIndex >= ga.m_genSize)
+	{
+		curGeneIndex = 0;
+		curChromIndex = 0;
+		ga.nextGen();
+	}
+	//tested_chrom = true;
 }
 
 void AIController::update()
@@ -40,7 +65,10 @@ void AIController::update()
 		elapsedSeconds = seconds;
 
 	}
-
+	if (!done)
+	{
+		MakeMove();
+	}
 	//GAManager::Instance()->Update(m_Timer->elapsedSeconds());
 
 	// this might be useful? Monsters killed
@@ -54,7 +82,7 @@ void AIController::update()
 	recordScore();
 }
 
-void AIController::addTower(TowerType type, int gridx, int gridy)
+bool AIController::addTower(TowerType type, int gridx, int gridy)
 {
 	// grid position can be from 0,0 to 25,17
 	/*
@@ -65,7 +93,23 @@ void AIController::addTower(TowerType type, int gridx, int gridy)
 	bool towerAdded = m_gameBoard->addTower(type, gridx, gridy);
 
 	// NOTE towerAdded might be false if the tower can't be placed in that position, is there isn't enough funds
+
+	return towerAdded;
 }
+
+void AIController::MakeMove()
+{
+	if (curGeneIndex < ga.CurGen()[curChromIndex].ChromSize())
+	{
+		Chromosome chrom  = ga.CurGen()[curChromIndex];
+		Gene gene = chrom.Genes()[curGeneIndex];
+		if (addTower((TowerType)gene.m_towerType, gene.m_position[0],gene.m_position[1]))
+		{
+			curGeneIndex++;
+		}
+	}
+}
+
 
 void AIController::setupBoard()
 {

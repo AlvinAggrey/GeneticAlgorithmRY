@@ -2,6 +2,11 @@
 #include "GA.h"
 
 
+Generation& GA::CurGen()
+{
+	return m_gens[m_currentGen];
+}
+
 void GA::init()
 {
 	Generation genenration;
