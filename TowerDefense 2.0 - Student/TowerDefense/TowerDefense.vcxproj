@@ -133,6 +133,7 @@
     <ClInclude Include="AIController.h" />
     <ClInclude Include="Chromosome.h" />
     <ClInclude Include="Clickable.h" />
+    <ClInclude Include="GA.h" />
     <ClInclude Include="Tower.h" />
     <ClInclude Include="TowerAndMonsterController.h" />
     <ClInclude Include="TowerButton.h" />
@@ -151,6 +152,7 @@
     <ClCompile Include="AIController.cpp" />
     <ClCompile Include="Chromosome.cpp" />
     <ClCompile Include="Clickable.cpp" />
+    <ClCompile Include="GA.cpp" />
     <ClCompile Include="Tower.cpp" />
     <ClCompile Include="TowerAndMonsterController.cpp" />
     <ClCompile Include="TowerButton.cpp" />
