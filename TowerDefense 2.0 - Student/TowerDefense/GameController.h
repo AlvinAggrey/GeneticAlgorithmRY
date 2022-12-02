@@ -8,6 +8,7 @@
 #include "GameState.h"
 #include "Tower.h"
 #include "TowerController.h"
+#include "AIController.h"
 
 
 // Game Controller keeps all Game State Variables Running and Updated
@@ -30,6 +31,7 @@ class GameBoard {
 private:
 	GameState* gameState;
 	TowerController* towerController;
+	AIController* aIController;
 	int width;
 
 	// Helper functions
@@ -38,7 +40,7 @@ private:
 
 public:
 	GameBoard(GameState* gameState, TowerController* towerController,
-			int widthInPixels);
+			int widthInPixels, AIController* _aIController);
 	~GameBoard();
 
 	bool validatePos(int mouseX, int mouseY, int range);

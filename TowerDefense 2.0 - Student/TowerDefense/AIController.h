@@ -26,6 +26,7 @@ public:
 	void gameOver();
 	
 	void MakeMove();
+	void RenderNextTowerPos(int range, sf::RectangleShape highlight, sf::RenderWindow* window);
 private:
 	GameController* m_gameController;
 	GameBoard*		m_gameBoard;
@@ -41,5 +42,7 @@ private:
 	int curChromIndex;
 	int curGeneIndex;
 	bool done;
+
+	Gene m_nextTower;
 };
 

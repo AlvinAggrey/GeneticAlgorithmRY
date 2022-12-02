@@ -103,10 +103,27 @@ void AIController::MakeMove()
 	{
 		Chromosome chrom  = ga.CurGen()[curChromIndex];
 		Gene gene = chrom.Genes()[curGeneIndex];
+		m_nextTower = gene;
 		if (addTower((TowerType)gene.m_towerType, gene.m_position[0],gene.m_position[1]))
 		{
 			curGeneIndex++;
 		}
+	}
+}
+void AIController::RenderNextTowerPos(int range, sf::RectangleShape highlight, sf::RenderWindow* window)
+{
+	if (ga.done)
+	{
+		return;
+	}
+
+	for (Gene gene : ga.CurGen()[0].Genes())
+	{
+		int gridX = gene.m_position[0];
+		int gridY = gene.m_position[1];
+		highlight.setSize(sf::Vector2f((float)range * 60, (float)range * 60));
+		highlight.setPosition((float)gridX * 60, (float)gridY * 60);
+		window->draw(highlight);
 	}
 }
 

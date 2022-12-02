@@ -196,7 +196,8 @@ GA::GA(int genSize)
 	m_genSize = genSize;
 
 	//initial generation is 0
-	m_currentGen = 0;	
+	m_currentGen = 0;
+	done = false;
 	//m_gens = {};
 	init();
 	//PrintGen();
