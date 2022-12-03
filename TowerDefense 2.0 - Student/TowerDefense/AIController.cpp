@@ -3,6 +3,7 @@
 #include "GameState.h"
 #include <iostream>
 #include <Windows.h>
+#include <sstream>
 
 #include "GameController.h"
 
@@ -125,6 +126,26 @@ void AIController::RenderNextTowerPos(int range, sf::RectangleShape highlight, s
 		highlight.setPosition((float)gridX * 60, (float)gridY * 60);
 		window->draw(highlight);
 	}
+}
+
+void AIController::RenderGenerationLabels(int fontSize, sf::Font font, sf::RenderWindow* window)
+{
+	std::stringstream genInfo;
+	std::stringstream chromInfo;
+	genInfo << "Generation: " << ga.m_currentGen; ///<< " / " << ga.m_gens.size() - 1;
+	chromInfo << "Chromosome: " << curChromIndex + 1 << " / " << ga.CurGen().size();
+	RenderText(fontSize, font, genInfo.str(), 140, 300, window);
+	RenderText(fontSize, font, chromInfo.str(), 140, 400, window);
+}
+
+void AIController::RenderText(int fontSize, sf::Font font, std::string contents, float x, float y, sf::RenderWindow* window)
+{
+	sf::Text text;
+	text.setFont(font);
+	text.setCharacterSize(fontSize);
+	text.setPosition(sf::Vector2f(x, y));
+	text.setString(contents);
+	window->draw(text);
 }
 
 

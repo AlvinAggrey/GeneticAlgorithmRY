@@ -268,6 +268,8 @@ void GameBoard::renderLabels(sf::RenderWindow* window) {
 	window->draw(scoreText);
 	window->draw(healthText);
 	window->draw(waveWord);
+
+	aIController->RenderGenerationLabels(30, font, window);
 }
 
 // Draw Range

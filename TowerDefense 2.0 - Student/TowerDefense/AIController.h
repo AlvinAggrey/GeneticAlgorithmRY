@@ -27,6 +27,8 @@ public:
 	
 	void MakeMove();
 	void RenderNextTowerPos(int range, sf::RectangleShape highlight, sf::RenderWindow* window);
+	void RenderGenerationLabels(int fontSize, sf::Font font,sf::RenderWindow* window);
+	void RenderText(int fontSize, sf::Font font, std::string contents, float x, float y, sf::RenderWindow* window);
 private:
 	GameController* m_gameController;
 	GameBoard*		m_gameBoard;
