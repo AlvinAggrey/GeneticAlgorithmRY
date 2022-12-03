@@ -148,6 +148,23 @@ bool GameBoard::towerIsPurchasable(TowerType type) {
 	return false;
 }
 
+void GameBoard::CheckInput(sf::Event event, sf::Vector2i mousePos)
+{
+	//toggle debug
+	if ((event.type == sf::Event::KeyReleased)
+		&& (event.mouseButton.button == sf::Keyboard::D))
+	{
+		if (debug)
+		{
+			debug = false;
+		}
+		else if (!debug)
+		{
+			debug = true;
+		}
+	}
+}
+
 bool GameBoard::addTower(TowerType type, int gridX, int gridY)
 {
 	if (towerIsPurchasable(type) && gridSpaceAvailable(gridX, gridY)) {
@@ -256,7 +273,7 @@ void GameBoard::render(sf::RenderWindow* window) {
 		renderShadow(mousePos.x, mousePos.y, 2, window);
 	}
 	
-	aIController->RenderNextTowerPos(2, shadowTile, window);
+	//aIController->RenderNextTowerPos(2, font, shadowTile, window);
 }
 
 void GameBoard::renderLabels(sf::RenderWindow* window) {
@@ -268,8 +285,6 @@ void GameBoard::renderLabels(sf::RenderWindow* window) {
 	window->draw(scoreText);
 	window->draw(healthText);
 	window->draw(waveWord);
-
-	aIController->RenderGenerationLabels(30, font, window);
 }
 
 // Draw Range
@@ -419,6 +434,7 @@ int main() {
 				gameMenuController->process(gameBoard->event, mousePos);
 				gameBoard->process(gameBoard->event, mousePos);
 				towerController->process(gameBoard->event, mousePos);
+				gameBoard->CheckInput(gameBoard->event, mousePos);
 			}
 		}
 
@@ -428,6 +444,7 @@ int main() {
 		if (clk->newTick()) {
 			//update
 			monsterController->update();
+
 			attackController->update();
 		}
 
@@ -455,6 +472,10 @@ int main() {
 			gameBoard->text.setFont(gameBoard->font);
 			gameBoard->text.setPosition(float(mousePos.x), float(mousePos.y));
 			window->draw(gameBoard->text);
+
+			aIController->RenderNextTowerPos(2, gameBoard->font, gameBoard->shadowTile, window);
+
+			aIController->RenderGenerationLabels(30, gameBoard->font, window);
 		}
 
 		if (gameState->getHealth() <= 0) {

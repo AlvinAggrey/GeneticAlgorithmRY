@@ -15,7 +15,7 @@ AIController::AIController()
 	m_gameBoard = nullptr;
 	m_Timer = nullptr;
 	m_gameState = nullptr;
-	ga = GA(10);
+	ga = GA(2);
 }
 
 AIController::~AIController()
@@ -39,11 +39,11 @@ void AIController::gameOver()
 	}
 
 	curChromIndex++;
-	if (ga.m_currentGen <= gen_Num)
+	if (ga.m_currentGen > gen_Num)
 	{
 		done = true;
 	}
-	if (curChromIndex >= ga.m_genSize)
+	if (curChromIndex >= ga.m_genSize && !done)
 	{
 		curGeneIndex = 0;
 		curChromIndex = 0;
@@ -111,20 +111,24 @@ void AIController::MakeMove()
 		}
 	}
 }
-void AIController::RenderNextTowerPos(int range, sf::RectangleShape highlight, sf::RenderWindow* window)
+void AIController::RenderNextTowerPos(int range, sf::Font orderFont, sf::RectangleShape highlight, sf::RenderWindow* window)
 {
-	if (ga.done)
+	if (done)
 	{
+		RenderText(70, orderFont, "done", 13 * 60, 6 * 60, window);
 		return;
 	}
-
-	for (Gene gene : ga.CurGen()[0].Genes())
+	Chromosome chrom = ga.CurGen()[curChromIndex];
+	Gene gene;
+	for (int i = 0; i < chrom.ChromSize(); i++)
 	{
+		gene = chrom.Genes()[i];
 		int gridX = gene.m_position[0];
 		int gridY = gene.m_position[1];
 		highlight.setSize(sf::Vector2f((float)range * 60, (float)range * 60));
 		highlight.setPosition((float)gridX * 60, (float)gridY * 60);
 		window->draw(highlight);
+		RenderText(15, orderFont, std::to_string(i) + ". TowerType:" + std::to_string(gene.m_towerType), gridX * 60, gridY * 60, window);
 	}
 }
 

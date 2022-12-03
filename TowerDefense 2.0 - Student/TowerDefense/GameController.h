@@ -34,11 +34,11 @@ private:
 	AIController* aIController;
 	int width;
 
+public:
 	// Helper functions
 	bool gridSpaceAvailable(int gridX, int gridY);
 	bool towerIsPurchasable(TowerType type);
 
-public:
 	GameBoard(GameState* gameState, TowerController* towerController,
 			int widthInPixels, AIController* _aIController);
 	~GameBoard();
@@ -70,6 +70,7 @@ public:
 	sf::Event event;
 
 	
+	void CheckInput(sf::Event event, sf::Vector2i mousePos);
 
 	
 };

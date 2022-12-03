@@ -26,7 +26,7 @@ public:
 	void gameOver();
 	
 	void MakeMove();
-	void RenderNextTowerPos(int range, sf::RectangleShape highlight, sf::RenderWindow* window);
+	void RenderNextTowerPos(int range, sf::Font orderFont, sf::RectangleShape highlight, sf::RenderWindow* window);
 	void RenderGenerationLabels(int fontSize, sf::Font font,sf::RenderWindow* window);
 	void RenderText(int fontSize, sf::Font font, std::string contents, float x, float y, sf::RenderWindow* window);
 private:
@@ -38,7 +38,7 @@ private:
 	int CheckCurrency();
 
 	int gen_Num = 2;
-	GA ga = GA(10);
+	GA ga = GA(2);
 	//bool tested_chrom;
 	//bool tested_gen;
 	int curChromIndex;
