@@ -26,10 +26,9 @@ AIController::~AIController()
 void AIController::gameOver()
 {
 	int waveReached = m_gameState->getCurrentWave();
-	int healthLeft = m_gameState->getHealth();
-	int avgkillCount = m_gameState->getMonsterEliminated()/ waveReached;
+	//int avgkillCount = m_gameState->getMonsterEliminated()/ waveReached;
 	//int tamsLeft = ;
-	int fitness = healthLeft + waveReached + avgkillCount;
+	int fitness = recordScore() + m_gameState->getTams();
 
 	ga.CurGen()[curChromIndex].m_fitness = fitness;
 	if (ga.done)
