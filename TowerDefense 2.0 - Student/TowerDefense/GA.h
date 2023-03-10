@@ -1,41 +1,59 @@
 #pragma once
-#include "Chromosome.h"
 #include <vector>
-#include <random>
+#include "Chromosome.h"
+#include "GASelection.h"
+#include "GAGenMaker.h"
 
-typedef std::vector<Chromosome> Generation;
+//chromsome and completed testing?
+typedef std::pair<Chromosome, bool> individual;
+
 class GA
 {
+private:
+    std::vector<individual> m_nextPopulation;
+    std::vector<std::vector<individual>> m_generations;
+
+    int m_popSize;
+    int m_genAmount;
+    int m_curGenIndex;
+    int m_curIndivIndex;
+    int m_childAmount;
+
+    bool m_done;
+
+    std::random_device m_rd;
+    std::mt19937 m_gen;
+
+    GAGenMaker m_genMaker;
+
 public:
-	GA();
-	GA(int genSize);
-	//copy constructor
-	GA(const GA& var);
-	GA& operator=(const GA& var);
+    GA ();
+    GA(int gens, int popSize, int childAmount, SelectionMethod selectionMethod, CrossoverMethod crossoverMethod);
+    
+    GA(const GA& other);
+    GA operator=(const GA& other);
+    //Control GA
+    void Init();
+    void NextIndiv();
+    void NextGen();
 
-	bool done;
+    //Set Properties
+    void SetCrossoverMethod(CrossoverMethod method);
+    void SetSelectionMethod(SelectionMethod method);
 
-	Generation& CurGen();
-	void init();
-	void nextGen();
 
-	std::vector<Generation> m_gens;
-	int m_currentGen;
-	int m_genSize;
+    //Checks
+    bool CheckTestAllPop();
+    bool CheckIsDone();
 
-	std::random_device rd;
-	//fitness function
+    //Get Information
+    individual& CurIndiv();
+    std::vector<individual>& CurGen();
+    int CurIndivIndex();
+    int CurGenIndex();
 
-	//selection
-	void rankSelection();
-	Generation rouletteSelection();
-	Chromosome rouletteSpin();
-	//crossover
-	Chromosome onepointCrossOver(Chromosome parent1, Chromosome parent2);
-	//mutation
-	void mutateGene();
-
-	void PrintGen(int index);
-	void PrintAllGens();
+    //Print
+    void PrintGen(int index);
+    void PrintAllGens();
 };
 

@@ -49,6 +49,15 @@
     <ClCompile Include="GA.cpp">
       <Filter>AI Code</Filter>
     </ClCompile>
+    <ClCompile Include="GACrossover.cpp">
+      <Filter>AI Code</Filter>
+    </ClCompile>
+    <ClCompile Include="GAGenMaker.cpp">
+      <Filter>AI Code</Filter>
+    </ClCompile>
+    <ClCompile Include="GASelection.cpp">
+      <Filter>AI Code</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Clickable.h">
@@ -100,6 +109,15 @@
       <Filter>AI Code</Filter>
     </ClInclude>
     <ClInclude Include="GA.h">
+      <Filter>AI Code</Filter>
+    </ClInclude>
+    <ClInclude Include="GACrossover.h">
+      <Filter>AI Code</Filter>
+    </ClInclude>
+    <ClInclude Include="GAGenMaker.h">
+      <Filter>AI Code</Filter>
+    </ClInclude>
+    <ClInclude Include="GASelection.h">
       <Filter>AI Code</Filter>
     </ClInclude>
   </ItemGroup>

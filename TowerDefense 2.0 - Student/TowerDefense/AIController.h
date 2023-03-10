@@ -38,7 +38,7 @@ private:
 	int CheckCurrency();
 
 	int gen_Num = 2;
-	GA ga = GA(2);
+	GA ga;
 	//bool tested_chrom;
 	//bool tested_gen;
 	int curChromIndex;

@@ -134,6 +134,9 @@
     <ClInclude Include="Chromosome.h" />
     <ClInclude Include="Clickable.h" />
     <ClInclude Include="GA.h" />
+    <ClInclude Include="GACrossover.h" />
+    <ClInclude Include="GAGenMaker.h" />
+    <ClInclude Include="GASelection.h" />
     <ClInclude Include="Tower.h" />
     <ClInclude Include="TowerAndMonsterController.h" />
     <ClInclude Include="TowerButton.h" />
@@ -153,6 +156,9 @@
     <ClCompile Include="Chromosome.cpp" />
     <ClCompile Include="Clickable.cpp" />
     <ClCompile Include="GA.cpp" />
+    <ClCompile Include="GACrossover.cpp" />
+    <ClCompile Include="GAGenMaker.cpp" />
+    <ClCompile Include="GASelection.cpp" />
     <ClCompile Include="Tower.cpp" />
     <ClCompile Include="TowerAndMonsterController.cpp" />
     <ClCompile Include="TowerButton.cpp" />

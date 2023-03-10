@@ -15,7 +15,8 @@ AIController::AIController()
 	m_gameBoard = nullptr;
 	m_Timer = nullptr;
 	m_gameState = nullptr;
-	ga = GA(2);
+	ga = GA(2,2,1,SelectionMethod::Roulette, CrossoverMethod::Onepoint);
+	ga.Init();
 }
 
 AIController::~AIController()
@@ -29,25 +30,38 @@ void AIController::gameOver()
 	//int avgkillCount = m_gameState->getMonsterEliminated()/ waveReached;
 	//int tamsLeft = ;
 	int fitness = recordScore() + m_gameState->getTams();
+	ga.CurIndiv().first.m_fitness = fitness;
 
-	ga.CurGen()[curChromIndex].m_fitness = fitness;
-	if (ga.done)
-	{
-		done = true;
-		return;
-	}
-
-	curChromIndex++;
-	if (ga.m_currentGen > gen_Num)
+	if (ga.CheckIsDone())
 	{
 		done = true;
 	}
-	if (curChromIndex >= ga.m_genSize && !done)
+	else if (ga.CheckTestAllPop())
 	{
-		curGeneIndex = 0;
-		curChromIndex = 0;
-		ga.nextGen();
+		ga.NextGen();
 	}
+	else
+	{
+		ga.NextIndiv();
+	}
+	//ga.CurGen()[curChromIndex].m_fitness = fitness;
+	//if (ga.CheckIsDone())
+	//{
+	//	done = true;
+	//	return;
+	//}
+
+	//curChromIndex++;
+	//if (ga.m_currentGen > gen_Num)
+	//{
+	//	done = true;
+	//}
+	//if (curChromIndex >= ga.m_genSize && !done)
+	//{
+	//	curGeneIndex = 0;
+	//	curChromIndex = 0;
+	//	ga.nextGen();
+	//}
 	//tested_chrom = true;
 }
 
@@ -99,9 +113,9 @@ bool AIController::addTower(TowerType type, int gridx, int gridy)
 
 void AIController::MakeMove()
 {
-	if (curGeneIndex < ga.CurGen()[curChromIndex].ChromSize())
+	if (curGeneIndex < ga.CurIndiv().first.ChromSize())
 	{
-		Chromosome chrom  = ga.CurGen()[curChromIndex];
+		Chromosome chrom  = ga.CurIndiv().first;
 		Gene gene = chrom.Genes()[curGeneIndex];
 		m_nextTower = gene;
 		if (addTower((TowerType)gene.m_towerType, gene.m_position[0],gene.m_position[1]))
@@ -117,7 +131,7 @@ void AIController::RenderNextTowerPos(int range, sf::Font orderFont, sf::Rectang
 		RenderText(70, orderFont, "done", 13 * 60, 6 * 60, window);
 		return;
 	}
-	Chromosome chrom = ga.CurGen()[curChromIndex];
+	Chromosome chrom = ga.CurIndiv().first;
 	Gene gene;
 	for (int i = 0; i < chrom.ChromSize(); i++)
 	{
@@ -135,8 +149,8 @@ void AIController::RenderGenerationLabels(int fontSize, sf::Font font, sf::Rende
 {
 	std::stringstream genInfo;
 	std::stringstream chromInfo;
-	genInfo << "Generation: " << ga.m_currentGen; ///<< " / " << ga.m_gens.size() - 1;
-	chromInfo << "Chromosome: " << curChromIndex + 1 << " / " << ga.CurGen().size();
+	genInfo << "Generation: " << ga.CurGenIndex(); ///<< " / " << ga.m_gens.size() - 1;
+	chromInfo << "Chromosome: " << ga.CurGenIndex() << " / " << ga.CurGen().size();
 	RenderText(fontSize, font, genInfo.str(), 140, 300, window);
 	RenderText(fontSize, font, chromInfo.str(), 140, 400, window);
 }

@@ -1,204 +1,168 @@
 #include <iostream>
 #include "GA.h"
 
-
-Generation& GA::CurGen()
+GA::GA()
 {
-	return m_gens[m_currentGen];
+    m_genAmount = 2;
+    m_popSize = 2;
+    m_childAmount = 1;
+    m_curGenIndex = 0;
+    m_curIndivIndex = 0;
+    m_done = false;
+    m_gen.seed(m_rd());
+
+    m_genMaker = GAGenMaker(SelectionMethod::Roulette, CrossoverMethod::Onepoint,m_popSize, m_childAmount);
 }
 
-void GA::init()
+GA::GA(int gens, int popSize, int childAmount, SelectionMethod selectionMethod, CrossoverMethod crossoverMethod)
 {
-	Generation genenration;
-	unsigned int seed;
-	for (int i = 0; i < m_genSize; i++)
-	{
-		seed = rd();
-		std::mt19937 gen(seed);
-		Chromosome chrom = Chromosome(gen());
-		genenration.push_back(chrom);
-	}
-	m_gens.push_back(genenration);
+    m_genAmount = gens;
+    m_popSize = popSize; 
+    m_childAmount = childAmount;
+    m_curGenIndex = 0;
+    m_curIndivIndex = 0;
+    m_done = false;
+    m_gen.seed(m_rd());
+
+    m_genMaker = GAGenMaker(selectionMethod, crossoverMethod, m_popSize, m_childAmount);
 }
 
-void GA::nextGen()
+GA::GA(const GA& other)
 {
-	Generation nextGen =  rouletteSelection();
-	m_gens.push_back(nextGen);
-	m_currentGen++;
-	PrintGen(m_currentGen);
-	//onepointCrossOver();
-	//mutateGene();
-}
-void GA::rankSelection()
-{
-	//int parentNum = m_genSize * 0.2; //about 1/5 of population pass genes
-	// idex numbers
-	
-	std::vector<Chromosome> bestChromRanked(m_genSize);
-	Generation unrankedchroms = m_gens[m_currentGen];
+    m_genAmount = other.m_genAmount;
+    m_popSize = other.m_popSize;
+    m_childAmount = other.m_childAmount;
+    m_curGenIndex = other.m_curGenIndex;
+    m_curIndivIndex = other.m_curIndivIndex;
+    m_done = other.m_done;
+    m_gen = other.m_gen;
 
-	//rank by fitness
-	for (int i = 0; i < m_genSize; i++)
-	{
-		int fittest = 0;
-		//find fittest within unranked
-		for (int i = (int) unrankedchroms.size() - 1; i >= 0; i--)
-		{
-			if (unrankedchroms[fittest].m_fitness < unrankedchroms[i].m_fitness)
-			{
-				fittest = i;
-			}
-		}
-		
-		bestChromRanked.push_back(unrankedchroms[fittest]);
-		unrankedchroms.erase(unrankedchroms.begin() + fittest);
-	}
-
-	
+    m_genMaker = other.m_genMaker;
 }
 
-Generation GA::rouletteSelection()
+GA GA::operator=(const GA& other)
 {
-	std::mt19937 gen(rd());
-	std::uniform_real_distribution<float> dist(0, 1);
-	//pick mates
-	Generation nextGen;
-	for (int i = 0; i < m_genSize; i++)
-	{
-		Chromosome parent1 = rouletteSpin();
-		Chromosome parent2 = rouletteSpin();
-		nextGen.push_back(onepointCrossOver(parent1, parent2));
-	}
-	return nextGen;
+    m_genAmount = other.m_genAmount;
+    m_popSize = other.m_popSize;
+    m_childAmount = other.m_childAmount;
+    m_curGenIndex = other.m_curGenIndex;
+    m_curIndivIndex = other.m_curIndivIndex;
+    m_done = other.m_done;
+    m_gen = other.m_gen;
+
+    m_genMaker = other.m_genMaker;
+    return *this;
 }
 
-Chromosome GA::rouletteSpin()
+void GA::Init()
 {
-	//all fitness values added together
-	float totalFitness = 0;
-	for (int i = 0; i < m_genSize; i++)
-	{
-		totalFitness += m_gens[m_currentGen][i].m_fitness;
-	}
-
-	std::mt19937 gen(rd());
-	std::uniform_real_distribution<float> dist(0, totalFitness);
-
-	bool done = false;
-	float randomNum;
-	int i = 0;
-
-	//go as long as one hasn't been picked
-	do
-	{
-		if (i >= m_genSize)
-			i = 0;
-
-		randomNum = dist(gen);
-		if (randomNum <= m_gens[m_currentGen][i].m_fitness)
-		{
-			done = true;
-			return m_gens[m_currentGen][i];
-		}
-		i++;
-	} while (done == false);
+	m_generations.push_back(m_genMaker.CreateGen());
 }
 
-Chromosome GA::onepointCrossOver(Chromosome parent1, Chromosome parent2)
+void GA::NextIndiv()
 {
-	
-	Chromosome child;
+    m_curIndivIndex++;
+    if (m_curIndivIndex >= m_popSize)
+    {
+        m_curIndivIndex = m_popSize - 1;
+    }
+}
 
-	std::mt19937 gen(rd());
-	std::uniform_real_distribution<float> coin(0, 2);
+void GA::NextGen()
+{
+    m_nextPopulation = m_genMaker.NextGen(m_generations[m_curGenIndex]);
+    m_generations.push_back(m_nextPopulation);
+    m_nextPopulation.clear();
+    m_curIndivIndex = 0;
+    m_curGenIndex++;
 
-	std::uniform_real_distribution<float> dist(0, parent1.ChromSize());
+    if (m_curGenIndex >= m_genAmount)
+    {
+        m_curGenIndex = m_genAmount - 1;
+    }
+    
+}
 
-	int coinFlip = coin(gen);
-	int randomPoint = dist(gen);
+void GA::SetCrossoverMethod(CrossoverMethod method)
+{
+    m_genMaker.SetCrossoverMethod(method);
+}
 
-	//copy over second portion to the child
-	if (coinFlip == 1)
-	{
-		child = parent1;
-		std::copy(parent2.Genes().begin() + randomPoint, parent2.Genes().end(), child.Genes().begin() + randomPoint);
-	}
-	else if (coinFlip == 2)
-	{
-		child = parent2;
-		std::copy(parent1.Genes().begin() + randomPoint, parent1.Genes().end(), child.Genes().begin() + randomPoint);
-	}
+void GA::SetSelectionMethod(SelectionMethod method)
+{
+    m_genMaker.SetSelectionMethod(method);
+}
 
+bool GA::CheckTestAllPop()
+{
+    for (individual indiv : m_generations[m_curGenIndex])
+    {
+        if (indiv.second == false)
+        {
+            return false;
+        }
+    }
+    return true;
+}
 
-	return child;
+bool GA::CheckIsDone()
+{
+    if (m_curGenIndex >= m_genAmount - 1 && CheckTestAllPop() == true)
+    {
+        return true;
+    }
+    return false;
+}
+
+individual& GA::CurIndiv()
+{
+    return m_generations[m_curGenIndex][m_curIndivIndex];
+}
+
+std::vector<individual>& GA::CurGen()
+{
+    return m_generations[m_curGenIndex];
+}
+
+int GA::CurIndivIndex()
+{
+    return m_curIndivIndex;
+}
+
+int GA::CurGenIndex()
+{
+    return m_curGenIndex;
 }
 
 void GA::PrintGen(int index)
 {
-	std::cout << "Generation: " << index << std::endl;
-	//std::cout << index << ": ";
+    std::cout << "Generation: " << index << std::endl;
+    //std::cout << index << ": ";
 
-	Generation generation = m_gens[index];
+    std::vector<individual> generation = m_generations[index];
 
-	for (int chromIndex = 0; chromIndex < generation.size(); chromIndex++)
-	{
-		std::cout << chromIndex << ": ";
-		for (int n = 0; n < generation[chromIndex].ChromSize(); n++)
-		{
-			int x = generation[chromIndex].Genes()[n].m_position[0];
-			int y = generation[chromIndex].Genes()[n].m_position[1];
-			int towerType = generation[chromIndex].Genes()[n].m_towerType;
-			std::cout << "|p-(" << x << "," << y << ")-t-" << towerType << "| ";
-		}
-		std::cout << "  " << std::endl;
-	}
-	std::cout << std::endl;
+    for (int chromIndex = 0; chromIndex < generation.size(); chromIndex++)
+    {
+        std::cout << chromIndex << ": ";
+        for (int n = 0; n < generation[chromIndex].first.ChromSize(); n++)
+        {
+            int x = generation[chromIndex].first.Genes()[n].m_position[0];
+            int y = generation[chromIndex].first.Genes()[n].m_position[1];
+            int towerType = generation[chromIndex].first.Genes()[n].m_towerType;
+            std::cout << "|p-(" << x << "," << y << ")-t-" << towerType << "| ";
+        }
+        std::cout << "  " << std::endl;
+    }
+    std::cout << std::endl;
 }
 
 void GA::PrintAllGens()
 {
-	std::cout << "Generations: " << m_currentGen << std::endl;
-	for (int i = 0; i < m_gens.size(); i++)
-	{
-		std::cout << i << ": ";
-		PrintGen(i);
-		std::cout << std::endl;
-	}
-}
-
-
-GA::GA()
-{
-	m_currentGen = 0;
-	m_genSize = 2;
-	init();
-}
-
-GA::GA(const GA& var)
-{
-	std::vector<Generation> m_gens = var.m_gens;
-	m_currentGen = var.m_currentGen;
-	m_genSize = var.m_genSize;
-}
-
-GA& GA::operator=(const GA& var)
-{
-	std::vector<Generation> m_gens = var.m_gens;
-	m_currentGen = var.m_currentGen;
-	m_genSize = var.m_genSize;
-
-	return *this;
-}
-
-GA::GA(int genSize)
-{
-	m_genSize = genSize;
-
-	//initial generation is 0
-	m_currentGen = 0;
-	done = false;
-	//m_gens = {};
-	init();
-	//PrintGen();
+    std::cout << "Generations: " << m_curGenIndex << std::endl;
+    for (int i = 0; i < m_generations.size(); i++)
+    {
+        std::cout << i << ": ";
+        PrintGen(i);
+        std::cout << std::endl;
+    }
 }
