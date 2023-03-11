@@ -20,6 +20,6 @@ public:
 	std::mt19937 m_gen;
 
 	//std::random_device rd;
-	Chromosome OnepointCrossover(Chromosome parent1, Chromosome parent2);
+	Chromosome Onepoint(Chromosome parent1, Chromosome parent2);
 };
 

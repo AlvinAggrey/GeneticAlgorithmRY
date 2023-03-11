@@ -31,6 +31,7 @@ void AIController::gameOver()
 	//int tamsLeft = ;
 	int fitness = recordScore() + m_gameState->getTams();
 	ga.CurIndiv().first.m_fitness = fitness;
+	ga.CurIndiv().second = true;
 
 	if (ga.CheckIsDone())
 	{
@@ -44,25 +45,8 @@ void AIController::gameOver()
 	{
 		ga.NextIndiv();
 	}
-	//ga.CurGen()[curChromIndex].m_fitness = fitness;
-	//if (ga.CheckIsDone())
-	//{
-	//	done = true;
-	//	return;
-	//}
-
-	//curChromIndex++;
-	//if (ga.m_currentGen > gen_Num)
-	//{
-	//	done = true;
-	//}
-	//if (curChromIndex >= ga.m_genSize && !done)
-	//{
-	//	curGeneIndex = 0;
-	//	curChromIndex = 0;
-	//	ga.nextGen();
-	//}
-	//tested_chrom = true;
+	
+	ResetGeneStep();
 }
 
 void AIController::update()
@@ -113,14 +97,14 @@ bool AIController::addTower(TowerType type, int gridx, int gridy)
 
 void AIController::MakeMove()
 {
-	if (curGeneIndex < ga.CurIndiv().first.ChromSize())
+	if (m_geneStep < ga.CurIndiv().first.ChromSize())
 	{
 		Chromosome chrom  = ga.CurIndiv().first;
-		Gene gene = chrom.Genes()[curGeneIndex];
+		Gene gene = chrom.Genes()[m_geneStep];
 		m_nextTower = gene;
 		if (addTower((TowerType)gene.m_towerType, gene.m_position[0],gene.m_position[1]))
 		{
-			curGeneIndex++;
+			m_geneStep++;
 		}
 	}
 }
@@ -149,8 +133,8 @@ void AIController::RenderGenerationLabels(int fontSize, sf::Font font, sf::Rende
 {
 	std::stringstream genInfo;
 	std::stringstream chromInfo;
-	genInfo << "Generation: " << ga.CurGenIndex(); ///<< " / " << ga.m_gens.size() - 1;
-	chromInfo << "Chromosome: " << ga.CurGenIndex() << " / " << ga.CurGen().size();
+	genInfo << "Generation: " << ga.CurGenIndex() + 1; ///<< " / " << ga.m_gens.size() - 1;
+	chromInfo << "Chromosome: " << ga.CurIndivIndex() + 1 << " / " << ga.CurGen().size();
 	RenderText(fontSize, font, genInfo.str(), 140, 300, window);
 	RenderText(fontSize, font, chromInfo.str(), 140, 400, window);
 }
@@ -163,6 +147,11 @@ void AIController::RenderText(int fontSize, sf::Font font, std::string contents,
 	text.setPosition(sf::Vector2f(x, y));
 	text.setString(contents);
 	window->draw(text);
+}
+
+void AIController::ResetGeneStep()
+{
+	m_geneStep = 0;
 }
 
 

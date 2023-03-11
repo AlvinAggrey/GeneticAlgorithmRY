@@ -17,32 +17,18 @@ GACrossover GACrossover::operator=(const GACrossover& other)
 	return *this;
 }
 
-
-
-Chromosome GACrossover::OnepointCrossover(Chromosome parent1, Chromosome parent2)
+//std::random_device rd;
+Chromosome GACrossover::Onepoint(Chromosome parent1, Chromosome parent2)
 {
+	Chromosome child = parent1;
+	child.m_fitness = 1;
 
-	Chromosome child;
+	std::mt19937 gen(1);
+	std::uniform_int_distribution<int> dist(0, parent1.ChromSize());
 
-	std::uniform_int_distribution<int> coin(0, 1);
-
-	std::uniform_int_distribution<int> dist(0, parent1.ChromSize()-1);
-
-	int coinFlip = coin(m_gen);
-	int randomPoint = dist(m_gen);
-
+	int randomPoint = dist(gen);
 	//copy over second portion to the child
-	if (coinFlip == 0)
-	{
-		child = parent1;
-		std::copy(parent2.Genes().begin() + randomPoint, parent2.Genes().end(), child.Genes().begin() + randomPoint);
-	}
-	else if (coinFlip == 1)
-	{
-		child = parent2;
-		std::copy(parent1.Genes().begin() + randomPoint, parent1.Genes().end(), child.Genes().begin() + randomPoint);
-	}
-
+	std::copy(parent2.Genes().begin() + randomPoint, parent2.Genes().end(), child.Genes().begin() + randomPoint);
 
 	return child;
 }

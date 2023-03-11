@@ -36,13 +36,14 @@ private:
 	GameState*		m_gameState;
 
 	int CheckCurrency();
+	void ResetGeneStep();
 
 	int gen_Num = 2;
 	GA ga;
 	//bool tested_chrom;
 	//bool tested_gen;
 	int curChromIndex;
-	int curGeneIndex;
+	int m_geneStep;
 	bool done;
 
 	Gene m_nextTower;
