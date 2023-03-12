@@ -11,7 +11,7 @@ GA::GA()
     m_done = false;
     m_gen.seed(m_rd());
 
-    m_genMaker = GAGenMaker(SelectionMethod::Roulette, CrossoverMethod::Onepoint,m_popSize, m_childAmount);
+    m_genMaker = GAGenMaker(SelectionMethod::Roulette, CrossoverMethod::OnePoint,m_popSize, m_childAmount);
 }
 
 GA::GA(int gens, int popSize, int childAmount, SelectionMethod selectionMethod, CrossoverMethod crossoverMethod)

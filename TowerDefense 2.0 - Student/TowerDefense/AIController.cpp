@@ -15,7 +15,7 @@ AIController::AIController()
 	m_gameBoard = nullptr;
 	m_Timer = nullptr;
 	m_gameState = nullptr;
-	ga = GA(2,2,1,SelectionMethod::Roulette, CrossoverMethod::Onepoint);
+	ga = GA(2,2,1,SelectionMethod::Roulette, CrossoverMethod::OnePoint);
 	ga.Init();
 }
 

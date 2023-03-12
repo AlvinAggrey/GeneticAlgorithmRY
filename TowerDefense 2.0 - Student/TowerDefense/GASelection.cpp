@@ -19,86 +19,15 @@ const GASelection& GASelection::operator=(const GASelection& other)
 	return *this;
 }
 
-void GASelection::RankSelection( std::vector<individual> population, int matingPoolSize)
+std::vector<individual> GASelection::RankChroms(std::vector<individual> indivs)
 {
-	//int parentNum = m_genSize * 0.2; //about 1/5 of population pass genes
-// idex numbers
-	int popSize = population.size();
-	std::vector<individual> bestChromRanked(popSize);
-	std::vector<individual> unrankedchroms = population;
-	//rank by fitness
-	for (int i = 0; i < popSize; i++)
-	{
-		int fittest = 0;
-		//find fittest within unranked
-		for (int i = (int)unrankedchroms.size() - 1; i >= 0; i--)
-		{
-			if (unrankedchroms[fittest].first.m_fitness < unrankedchroms[i].first.m_fitness)
-			{
-				fittest = i;
-			}
-		}
-
-		bestChromRanked.push_back(unrankedchroms[fittest]);
-		unrankedchroms.erase(unrankedchroms.begin() + fittest);
-	}
-
-
-}
-
-Chromosome GASelection::RouletteSpin(std::vector<individual> population)
-{
-	int popSize = population.size();
-
-	//all fitness values added together
-	float totalFitness = 0;
-	for (int i = 0; i < popSize; i++)
-	{
-		totalFitness += population[i].first.m_fitness;
-	}
-
-	std::uniform_real_distribution<float> dist(0, totalFitness);
-
-	bool done = false;
-	float randomNum;
-	int i = 0;
-
-	//go as long as one hasn't been picked
-	do
-	{
-		if (i >= popSize)
-			i = 0;
-
-		randomNum = dist(m_gen);
-		if (randomNum <= population[i].first.m_fitness)
-		{
-			done = true;
-			return population[i].first;
-		}
-		i++;
-	} while (done == false);
-}
-
-std::vector<individual> GASelection::RouletteSelection(std::vector<individual> population, int matingPoolSize)
-{
-
-	std::vector<individual> matingPool;
-	for (int i = 0; i < matingPoolSize; i++)
-	{
-		matingPool.push_back(individual(RouletteSpin(population), false));
-	}
-	return matingPool;
-}
-
-std::vector<Chromosome> GASelection::RankChroms(std::vector<Chromosome>* chroms)
-{
-    std::vector<Chromosome> rankedList;
-    std::vector<Chromosome> tempList = *chroms;
+    std::vector<individual> rankedList;
+    std::vector<individual> tempList = indivs;
 
     //order chromosomes by fitness biggest to lowests
-    for (int i = 0; i < (int)chroms->size(); i++)
+    for (int i = 0; i < (int)indivs.size(); i++)
     {
-        Chromosome fittest;
+        individual fittest;
         int fittestIndex = 0;
         for (int i = 0; i < tempList.size(); i++)
         {
@@ -107,7 +36,7 @@ std::vector<Chromosome> GASelection::RankChroms(std::vector<Chromosome>* chroms)
                 fittest = tempList[i];
                 fittestIndex = i;
             }
-            else if (fittest.m_fitness < tempList[i].m_fitness)
+            else if (fittest.first.m_fitness < tempList[i].first.m_fitness)
             {
                 fittest = tempList[i];
                 fittestIndex = i;
@@ -120,13 +49,13 @@ std::vector<Chromosome> GASelection::RankChroms(std::vector<Chromosome>* chroms)
     return rankedList;
 }
 //ranks generation, selects n from ranked list from the fittest, returns copies of selected individuals
-std::vector<Chromosome> GASelection::RankedSelection(std::vector<Chromosome>* gen, int selectNum, int parentNum)
+std::vector<individual> GASelection::Ranked(std::vector<individual> gen, int selectNum, int parentNum)
 {
 
-    std::vector<Chromosome> rankedList = RankChroms(gen);
+    std::vector<individual> rankedList = RankChroms(gen);
 
     //select n out of rankedList
-    std::vector<Chromosome> selected;
+    std::vector<individual> selected;
     if (selectNum - 1 > rankedList.size())
     {
         std::cout << "Generation is too small to select this many indviduals." << std::endl;
@@ -138,7 +67,7 @@ std::vector<Chromosome> GASelection::RankedSelection(std::vector<Chromosome>* ge
     }
 
     //add to selected chroms to mating pool - copies are allowed
-    std::vector<Chromosome> matingPool;
+    std::vector<individual> matingPool;
     int selectedIndex = 0;
     do
     {
@@ -156,12 +85,10 @@ std::vector<Chromosome> GASelection::RankedSelection(std::vector<Chromosome>* ge
 }
 
 //split generation into bands select n from each band
-std::vector<Chromosome> GASelection::LinearRankedSelection(std::vector<Chromosome>* gen, unsigned int seed, std::initializer_list<int> bandDists)
+std::vector<individual> GASelection::LinearRanked(std::vector<individual> gen, std::initializer_list<int> bandDists)
 {
-    std::vector<Chromosome> rankedList = RankChroms(gen);
-    std::vector<Chromosome> matingPool;
-
-    std::mt19937 mt(seed);
+    std::vector<individual> rankedList = RankChroms(gen);
+    std::vector<individual> matingPool;
 
     int bandStart = 0;
     int bandDist;
@@ -174,7 +101,7 @@ std::vector<Chromosome> GASelection::LinearRankedSelection(std::vector<Chromosom
         std::uniform_int_distribution<int> dist(bandStart, bandStart + bandDist - 1);
         for (int n = 0; n < bandDist; n++)
         {
-            randNum = dist(mt);
+            randNum = dist(m_gen);
             matingPool.push_back(rankedList[randNum]); //select indiv in current band randomly
         }
         bandStart += bandDist; //move to next lower fitness band
@@ -183,12 +110,12 @@ std::vector<Chromosome> GASelection::LinearRankedSelection(std::vector<Chromosom
 }
 
 //adds indivduals to returned mating pool - linear ranked selection
-std::vector<Chromosome> GASelection::ElitistSelection(std::vector<Chromosome>* gen, unsigned int seed, std::vector<Chromosome> indivs, std::initializer_list<int> bandDists)
+std::vector<individual> GASelection::Elitist(std::vector<individual> gen, std::vector<individual> indivs, std::initializer_list<int> bandDists)
 {
-    std::vector<Chromosome> matingPool = LinearRankedSelection(gen, seed, bandDists);
+    std::vector<individual> matingPool = LinearRanked(gen, bandDists);
     if (indivs.size() != 0)
     {
-        for (Chromosome indiv : indivs)
+        for (individual indiv : indivs)
         {
             matingPool.push_back(indiv);
         }
@@ -196,12 +123,11 @@ std::vector<Chromosome> GASelection::ElitistSelection(std::vector<Chromosome>* g
     return matingPool;
 }
 
-std::vector<Chromosome> GASelection::TournamentSelection(std::vector<Chromosome>* gen, unsigned int seed, int matingPoolSize, int tournySize)
+std::vector<individual> GASelection::Tournament(std::vector<individual> gen, int matingPoolSize, int tournySize)
 {
-    std::vector<Chromosome> matingPool;
-    std::vector<Chromosome> roster = *gen;
-    std::vector<Chromosome> tournament;
-    std::mt19937 mt(seed);
+    std::vector<individual> matingPool;
+    std::vector<individual> roster = gen;
+    std::vector<individual> tournament;
     std::uniform_int_distribution<int> rosterIndex(0, (int)roster.size() - 1);
 
     int randNum;
@@ -211,46 +137,45 @@ std::vector<Chromosome> GASelection::TournamentSelection(std::vector<Chromosome>
         //picks participants
         for (int i = 0; i < tournySize; i++)
         {
-            randNum = rosterIndex(mt);
+            randNum = rosterIndex(m_gen);
             tournament.push_back(roster[randNum]);
         }
         //pick tournament winner aka most fit
-        matingPool.push_back(RankChroms(&tournament)[0]);
+        matingPool.push_back(RankChroms(tournament)[0]);
         tournament.clear();
     }
     return matingPool;
 }
 
 //puts individuals on a wheel and spins it, whatever the picker falls on joins the mating pool
-std::vector<Chromosome> GASelection::RouletteSelection(std::vector<Chromosome>* gen, unsigned int seed, int parentNum)
+std::vector<individual> GASelection::Roulette(std::vector<individual> gen, int parentNum)
 {
     float totalFitness = 0;
-    for (Chromosome indiv : *gen)
+    for (individual indiv : gen)
     {
-        totalFitness += indiv.m_fitness;
+        totalFitness += indiv.first.m_fitness;
     }
 
     float pickerSpot;
-    std::mt19937 mt(seed);
     std::uniform_real_distribution<float> randSpot(0, totalFitness);
 
-    std::vector<Chromosome> wheel = *gen;
-    wheel = RankChroms(&wheel);
-    std::vector<Chromosome> matingPool;
+    std::vector<individual> wheel = gen;
+    wheel = RankChroms(wheel);
+    std::vector<individual> matingPool;
 
     float spinDistance;
     for (int i = 0; i < parentNum; i++)
     {
-        pickerSpot = randSpot(mt);
+        pickerSpot = randSpot(m_gen);
         spinDistance = pickerSpot;
-        for (Chromosome indivSlot : wheel)
+        for (individual indivSlot : wheel)
         {
-            if (spinDistance >= 0 && spinDistance <= indivSlot.m_fitness)
+            if (spinDistance >= 0 && spinDistance <= indivSlot.first.m_fitness)
             {
                 matingPool.push_back(indivSlot);
                 break;
             }
-            spinDistance -= indivSlot.m_fitness;
+            spinDistance -= indivSlot.first.m_fitness;
         }
     }
 
@@ -258,17 +183,17 @@ std::vector<Chromosome> GASelection::RouletteSelection(std::vector<Chromosome>* 
 }
 
 //march around wheel a distance a set number of times add whatever the picker lands on each time
-std::vector<Chromosome> GASelection::StochasticSamplingSelection(std::vector<Chromosome>* gen, unsigned int seed, int parentNum)
+std::vector<individual> GASelection::StochasticSampling(std::vector<individual> gen, int parentNum)
 {
     float totalFitness = 0;
-    for (Chromosome indiv : *gen)
+    for (individual indiv : gen)
     {
-        totalFitness += indiv.m_fitness;
+        totalFitness += indiv.first.m_fitness;
     }
 
-    std::vector<Chromosome> wheel = *gen;
-    wheel = RankChroms(&wheel);
-    std::vector<Chromosome> matingPool;
+    std::vector<individual> wheel = gen;
+    wheel = RankChroms(wheel);
+    std::vector<individual> matingPool;
 
     float pickerSpot = 0;
     int index = 0;
@@ -279,9 +204,9 @@ std::vector<Chromosome> GASelection::StochasticSamplingSelection(std::vector<Chr
     {
         if (i == 0)
         {
-            std::mt19937 mt(seed);
+            //std::mt19937 mt(seed);
             std::uniform_real_distribution<float> randSpot(0, march);
-            pickerSpot = randSpot(mt);
+            pickerSpot = randSpot(m_gen);
         }
         else
         {
@@ -297,13 +222,13 @@ std::vector<Chromosome> GASelection::StochasticSamplingSelection(std::vector<Chr
             {
                 index = 0;
             }
-            Chromosome indivSlot = wheel[index];
-            if (spinDistance >= 0 && spinDistance <= indivSlot.m_fitness)
+            individual indivSlot = wheel[index];
+            if (spinDistance >= 0 && spinDistance <= indivSlot.first.m_fitness)
             {
                 matingPool.push_back(indivSlot);
                 break;
             }
-            spinDistance -= indivSlot.m_fitness;
+            spinDistance -= indivSlot.first.m_fitness;
             index++;
         }
     }

@@ -6,7 +6,7 @@ typedef std::pair<Chromosome, bool> individual;
 enum class CrossoverMethod
 {
 	None,
-	Onepoint,
+	OnePoint,
 };
 class GACrossover
 {
@@ -20,6 +20,6 @@ public:
 	std::mt19937 m_gen;
 
 	//std::random_device rd;
-	Chromosome Onepoint(Chromosome parent1, Chromosome parent2);
+	Chromosome OnePoint(Chromosome parent1, Chromosome parent2);
 };
 

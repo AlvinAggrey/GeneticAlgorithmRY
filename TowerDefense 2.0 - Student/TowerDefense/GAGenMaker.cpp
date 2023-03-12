@@ -3,7 +3,7 @@
 GAGenMaker::GAGenMaker()
 {
     m_selectionMethod = SelectionMethod::Roulette;
-    m_crossoverMethod = CrossoverMethod::Onepoint;
+    m_crossoverMethod = CrossoverMethod::OnePoint;
     m_popSize = 2;
     m_childAmount = 1;
 
@@ -25,9 +25,34 @@ std::vector<individual> GAGenMaker::Selection(std::vector<individual> population
 
     switch (m_selectionMethod)
     {
+    case SelectionMethod::Ranked:
+    {
+        matingPool = m_selector.Ranked(population,,4);
+        break;
+    }
     case SelectionMethod::Roulette:
     {
-        matingPool = m_selector.RouletteSelection(population, 4);
+        matingPool = m_selector.Roulette(population, 4);
+        break;
+    }
+    case SelectionMethod::LinearRanked:
+    {
+        matingPool = m_selector.LinearRanked(population, 4);
+        break;
+    }
+    case SelectionMethod::Elitist:
+    {
+        matingPool = m_selector.Elitist(population, 4);
+        break;
+    }
+    case SelectionMethod::Stochastic:
+    {
+        matingPool = m_selector.StochasticSampling(population, 4);
+        break;
+    }
+    case SelectionMethod::Tournament:
+    {
+        matingPool = m_selector.Tournament(population, 4);
         break;
     }
     }
@@ -47,7 +72,7 @@ std::vector<individual> GAGenMaker::Crossover(std::vector<individual> matingPool
 
         switch (m_crossoverMethod)
         {
-        case CrossoverMethod::Onepoint:
+        case CrossoverMethod::OnePoint:
         {
             Chromosome child = m_geneCrossover.OnepointCrossover(parent1, parent2);
             children.push_back(individual(child, false));

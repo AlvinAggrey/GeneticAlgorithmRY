@@ -18,7 +18,7 @@ GACrossover GACrossover::operator=(const GACrossover& other)
 }
 
 //std::random_device rd;
-Chromosome GACrossover::Onepoint(Chromosome parent1, Chromosome parent2)
+Chromosome GACrossover::OnePoint(Chromosome parent1, Chromosome parent2)
 {
 	Chromosome child = parent1;
 	child.m_fitness = 1;
