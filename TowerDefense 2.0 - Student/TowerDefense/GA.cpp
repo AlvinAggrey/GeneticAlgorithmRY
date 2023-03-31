@@ -83,6 +83,11 @@ void GA::NextGen()
     
 }
 
+void GA::UseSLRanked(int selectNum, int matingPoolSize)
+{
+    m_genMaker.
+}
+
 void GA::SetCrossoverMethod(CrossoverMethod method)
 {
     m_genMaker.SetCrossoverMethod(method);
@@ -91,6 +96,7 @@ void GA::SetCrossoverMethod(CrossoverMethod method)
 void GA::SetSelectionMethod(SelectionMethod method)
 {
     m_genMaker.SetSelectionMethod(method);
+    
 }
 
 bool GA::CheckTestAllPop()

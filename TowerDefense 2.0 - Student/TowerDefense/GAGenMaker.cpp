@@ -27,7 +27,7 @@ std::vector<individual> GAGenMaker::Selection(std::vector<individual> population
     {
     case SelectionMethod::Ranked:
     {
-        matingPool = m_selector.Ranked(population,,4);
+        matingPool = m_selector.Ranked(population,3,4);
         break;
     }
     case SelectionMethod::Roulette:
@@ -37,12 +37,12 @@ std::vector<individual> GAGenMaker::Selection(std::vector<individual> population
     }
     case SelectionMethod::LinearRanked:
     {
-        matingPool = m_selector.LinearRanked(population, 4);
+        matingPool = m_selector.LinearRanked(population, m_bandDists);
         break;
     }
     case SelectionMethod::Elitist:
     {
-        matingPool = m_selector.Elitist(population, 4);
+        matingPool = m_selector.Elitist(population,, 4);
         break;
     }
     case SelectionMethod::Stochastic:
@@ -136,5 +136,43 @@ void GAGenMaker::SetSelectionMethod(SelectionMethod selectionMethod)
 void GAGenMaker::SetCrossoverMethod(CrossoverMethod crossovermethod)
 {
     m_crossoverMethod = crossovermethod;
+}
+
+void GAGenMaker::UseSLRanked(int selectNum, int matingPoolSize)
+{
+    m_selectionMethod = SelectionMethod::Ranked;
+    m_selectNum = selectNum;
+    m_matingPoolSize = matingPoolSize;
+}
+
+void GAGenMaker::UseSLRoulette(int matingPoolSize)
+{
+    m_selectionMethod = SelectionMethod::Roulette;
+    m_matingPoolSize = matingPoolSize;
+}
+
+void GAGenMaker::UseSLLinearRanked(std::initializer_list<int> bandDists)
+{
+    m_selectionMethod = SelectionMethod::Ranked;
+    m_bandDists = bandDists;
+}
+
+void GAGenMaker::UseSLElitist(std::initializer_list<int> bandDists)
+{
+    m_selectionMethod = SelectionMethod::Ranked;
+    m_bandDists = bandDists;
+}
+
+void GAGenMaker::UseSLTournament(int matingPoolSize)
+{
+    m_selectionMethod = SelectionMethod::Ranked;
+    m_matingPoolSize = matingPoolSize;
+}
+
+void GAGenMaker::UseSLStochastic(int matingPoolSize, int tournySize)
+{
+    m_selectionMethod = SelectionMethod::Ranked;
+    m_tournySize = tournySize;
+    m_matingPoolSize = matingPoolSize;
 }
 

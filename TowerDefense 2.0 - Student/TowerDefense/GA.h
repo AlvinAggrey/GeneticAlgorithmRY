@@ -26,6 +26,14 @@ private:
 
     GAGenMaker m_genMaker;
 
+    int m_selectNum;
+    int m_matingPoolSize;
+    int tournySize;
+    std::initializer_list<int> m_bandDists;
+
+    SelectionMethod m_selectionMethod;
+    CrossoverMethod m_crossoverMethod;
+
 public:
     GA ();
     GA(int gens, int popSize, int childAmount, SelectionMethod selectionMethod, CrossoverMethod crossoverMethod);
@@ -38,6 +46,15 @@ public:
     void NextGen();
 
     //Set Properties
+    void UseSLRanked(int selectNum, int matingPoolSize);
+    void UseSLRoulette(int matingPoolSize);
+    void UseSLLinearRanked(std::initializer_list<int> bandDists);
+    void UseSLElitist(std::initializer_list<int> bandDists);
+    void UseSLTournament(int matingPoolSize);
+    void UseSLStochastic(int matingPoolSize, int tournySize);
+    
+    void UseCROnePoint();
+
     void SetCrossoverMethod(CrossoverMethod method);
     void SetSelectionMethod(SelectionMethod method);
 
