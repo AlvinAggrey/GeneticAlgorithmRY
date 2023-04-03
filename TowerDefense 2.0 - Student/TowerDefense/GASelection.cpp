@@ -85,7 +85,7 @@ std::vector<individual> GASelection::Ranked(std::vector<individual> gen, int sel
 }
 
 //split generation into bands select n from each band
-std::vector<individual> GASelection::LinearRanked(std::vector<individual> gen, std::initializer_list<int> bandDists)
+std::vector<individual> GASelection::LinearRanked(std::vector<individual> gen, std::vector<int> bandDists)
 {
     std::vector<individual> rankedList = RankChroms(gen);
     std::vector<individual> matingPool;
@@ -110,7 +110,7 @@ std::vector<individual> GASelection::LinearRanked(std::vector<individual> gen, s
 }
 
 //adds indivduals to returned mating pool - linear ranked selection
-std::vector<individual> GASelection::Elitist(std::vector<individual> gen, std::vector<individual> indivs, std::initializer_list<int> bandDists)
+std::vector<individual> GASelection::Elitist(std::vector<individual> gen, std::vector<individual> indivs, std::vector<int> bandDists)
 {
     std::vector<individual> matingPool = LinearRanked(gen, bandDists);
     if (indivs.size() != 0)

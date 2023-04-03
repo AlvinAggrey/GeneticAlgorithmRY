@@ -28,7 +28,7 @@ private:
 
     int m_selectNum;
     int m_matingPoolSize;
-    int tournySize;
+    int m_tournySize;
     std::initializer_list<int> m_bandDists;
 
     SelectionMethod m_selectionMethod;
@@ -46,17 +46,17 @@ public:
     void NextGen();
 
     //Set Properties
-    void UseSLRanked(int selectNum, int matingPoolSize);
-    void UseSLRoulette(int matingPoolSize);
-    void UseSLLinearRanked(std::initializer_list<int> bandDists);
-    void UseSLElitist(std::initializer_list<int> bandDists);
-    void UseSLTournament(int matingPoolSize);
-    void UseSLStochastic(int matingPoolSize, int tournySize);
+    void UseRanked(int selectNum, int matingPoolSize);
+    void UseRoulette(int matingPoolSize);
+    void UseLinearRanked(std::initializer_list<int> bandDists);
+    void UseElitist(std::initializer_list<int> bandDists);
+    void UseTournament(int matingPoolSize);
+    void UseStochastic(int matingPoolSize, int tournySize);
     
-    void UseCROnePoint();
+    void UseOnePoint();
 
-    void SetCrossoverMethod(CrossoverMethod method);
-    void SetSelectionMethod(SelectionMethod method);
+    //void SetCrossoverMethod(CrossoverMethod method);
+    //void SetSelectionMethod(SelectionMethod method);
 
 
     //Checks

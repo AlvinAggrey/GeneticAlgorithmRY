@@ -17,6 +17,8 @@ AIController::AIController()
 	m_gameState = nullptr;
 	ga = GA(2,2,1,SelectionMethod::Roulette, CrossoverMethod::OnePoint);
 	ga.Init();
+	ga.UseLinearRanked({1,1});
+	ga.UseOnePoint();
 }
 
 AIController::~AIController()

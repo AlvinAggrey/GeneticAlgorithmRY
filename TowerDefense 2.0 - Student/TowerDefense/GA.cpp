@@ -83,21 +83,58 @@ void GA::NextGen()
     
 }
 
-void GA::UseSLRanked(int selectNum, int matingPoolSize)
+void GA::UseRanked(int selectNum, int matingPoolSize)
 {
-    m_genMaker.
+    m_selectionMethod = SelectionMethod::Ranked;
+    m_genMaker.UseRanked(m_selectNum, matingPoolSize);
 }
 
-void GA::SetCrossoverMethod(CrossoverMethod method)
+void GA::UseRoulette(int matingPoolSize)
 {
-    m_genMaker.SetCrossoverMethod(method);
+    m_selectionMethod = SelectionMethod::Roulette;
+    m_genMaker.UseRoulette(m_matingPoolSize);
 }
 
-void GA::SetSelectionMethod(SelectionMethod method)
+void GA::UseLinearRanked(std::initializer_list<int> bandDists)
 {
-    m_genMaker.SetSelectionMethod(method);
-    
+    m_selectionMethod = SelectionMethod::LinearRanked;
+    m_genMaker.UseLinearRanked(bandDists);
 }
+
+void GA::UseElitist(std::initializer_list<int> bandDists)
+{
+    m_selectionMethod = SelectionMethod::Elitist;
+    m_genMaker.UseElitist(bandDists);
+}
+
+void GA::UseTournament(int matingPoolSize)
+{
+    m_selectionMethod = SelectionMethod::Tournament;
+    m_genMaker.UseTournament(matingPoolSize);
+}
+
+void GA::UseStochastic(int matingPoolSize, int tournySize)
+{
+    m_selectionMethod = SelectionMethod::Stochastic;
+    m_genMaker.UseStochastic(matingPoolSize, tournySize);
+}
+
+void GA::UseOnePoint()
+{
+    m_crossoverMethod = CrossoverMethod::OnePoint;
+    m_genMaker.UseOnePoint();
+}
+
+//void GA::SetCrossoverMethod(CrossoverMethod method)
+//{
+//    m_genMaker.SetCrossoverMethod(method);
+//}
+//
+//void GA::SetSelectionMethod(SelectionMethod method)
+//{
+//    m_genMaker.SetSelectionMethod(method);
+//    
+//}
 
 bool GA::CheckTestAllPop()
 {

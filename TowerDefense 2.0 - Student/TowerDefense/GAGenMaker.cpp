@@ -27,12 +27,12 @@ std::vector<individual> GAGenMaker::Selection(std::vector<individual> population
     {
     case SelectionMethod::Ranked:
     {
-        matingPool = m_selector.Ranked(population,3,4);
+        matingPool = m_selector.Ranked(population, m_selectNum, m_matingPoolSize);
         break;
     }
     case SelectionMethod::Roulette:
     {
-        matingPool = m_selector.Roulette(population, 4);
+        matingPool = m_selector.Roulette(population,m_matingPoolSize);
         break;
     }
     case SelectionMethod::LinearRanked:
@@ -42,17 +42,17 @@ std::vector<individual> GAGenMaker::Selection(std::vector<individual> population
     }
     case SelectionMethod::Elitist:
     {
-        matingPool = m_selector.Elitist(population,, 4);
+        //matingPool = m_selector.Elitist(population, m_bandDists, 4);
         break;
     }
     case SelectionMethod::Stochastic:
     {
-        matingPool = m_selector.StochasticSampling(population, 4);
+        matingPool = m_selector.StochasticSampling(population, m_matingPoolSize);
         break;
     }
     case SelectionMethod::Tournament:
     {
-        matingPool = m_selector.Tournament(population, 4);
+        matingPool = m_selector.Tournament(population, m_matingPoolSize, m_tournySize);
         break;
     }
     }
@@ -74,7 +74,7 @@ std::vector<individual> GAGenMaker::Crossover(std::vector<individual> matingPool
         {
         case CrossoverMethod::OnePoint:
         {
-            Chromosome child = m_geneCrossover.OnepointCrossover(parent1, parent2);
+            Chromosome child = m_geneCrossover.OnePoint(parent1, parent2);
             children.push_back(individual(child, false));
             break;
         }
@@ -128,51 +128,56 @@ std::vector<individual> GAGenMaker::NextGen(std::vector<individual> population)
     return nextGen;
 }
 
-void GAGenMaker::SetSelectionMethod(SelectionMethod selectionMethod)
-{
-    m_selectionMethod = selectionMethod;
-}
+//void GAGenMaker::SetSelectionMethod(SelectionMethod selectionMethod)
+//{
+//    m_selectionMethod = selectionMethod;
+//}
+//
+//void GAGenMaker::SetCrossoverMethod(CrossoverMethod crossovermethod)
+//{
+//    m_crossoverMethod = crossovermethod;
+//}
 
-void GAGenMaker::SetCrossoverMethod(CrossoverMethod crossovermethod)
-{
-    m_crossoverMethod = crossovermethod;
-}
-
-void GAGenMaker::UseSLRanked(int selectNum, int matingPoolSize)
+void GAGenMaker::UseRanked(int selectNum, int matingPoolSize)
 {
     m_selectionMethod = SelectionMethod::Ranked;
     m_selectNum = selectNum;
     m_matingPoolSize = matingPoolSize;
 }
 
-void GAGenMaker::UseSLRoulette(int matingPoolSize)
+void GAGenMaker::UseRoulette(int matingPoolSize)
 {
     m_selectionMethod = SelectionMethod::Roulette;
     m_matingPoolSize = matingPoolSize;
 }
 
-void GAGenMaker::UseSLLinearRanked(std::initializer_list<int> bandDists)
+void GAGenMaker::UseLinearRanked(std::initializer_list<int> bandDists)
 {
-    m_selectionMethod = SelectionMethod::Ranked;
+    m_selectionMethod = SelectionMethod::LinearRanked;
     m_bandDists = bandDists;
 }
 
-void GAGenMaker::UseSLElitist(std::initializer_list<int> bandDists)
+void GAGenMaker::UseElitist(std::initializer_list<int> bandDists)
 {
-    m_selectionMethod = SelectionMethod::Ranked;
+    m_selectionMethod = SelectionMethod::Elitist;
     m_bandDists = bandDists;
 }
 
-void GAGenMaker::UseSLTournament(int matingPoolSize)
+void GAGenMaker::UseTournament(int matingPoolSize)
 {
-    m_selectionMethod = SelectionMethod::Ranked;
+    m_selectionMethod = SelectionMethod::Tournament;
     m_matingPoolSize = matingPoolSize;
 }
 
-void GAGenMaker::UseSLStochastic(int matingPoolSize, int tournySize)
+void GAGenMaker::UseStochastic(int matingPoolSize, int tournySize)
 {
-    m_selectionMethod = SelectionMethod::Ranked;
+    m_selectionMethod = SelectionMethod::Stochastic;
     m_tournySize = tournySize;
     m_matingPoolSize = matingPoolSize;
+}
+
+void GAGenMaker::UseOnePoint()
+{
+    m_crossoverMethod = CrossoverMethod::OnePoint;
 }
 
