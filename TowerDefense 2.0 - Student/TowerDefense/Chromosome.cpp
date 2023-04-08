@@ -5,13 +5,34 @@ Chromosome::Chromosome()
 	std::random_device rd;
 	m_randomSeed = rd();
 	m_fitness = 1;
-	Gen(m_randomSeed);
 };
 Chromosome::Chromosome(unsigned int seed)
 {
 	m_randomSeed = seed;
 	m_fitness = 1;
+}
+
+void Chromosome::Init(int chromSize)
+{
+	m_chromsize = chromSize;
 	Gen(m_randomSeed);
+}
+
+void Chromosome::AddGene(Gene gene)
+{
+	m_genes.push_back(gene);
+	m_chromsize++;
+}
+
+void Chromosome::SetSeed(unsigned int seed)
+{
+	m_randomSeed = seed;
+}
+
+void Chromosome::ClearAll()
+{
+	m_genes.clear();
+	m_chromsize = 0;
 }
 
 void Chromosome::Gen(unsigned int seed)
@@ -38,6 +59,7 @@ Chromosome::Chromosome(const Chromosome& var)
 	m_fitness = var.m_fitness;
 	m_randomSeed = var.m_randomSeed;
 	m_genes = var.m_genes;
+	m_chromsize = var.m_chromsize;
 }
 
 Chromosome& Chromosome::operator=(const Chromosome& var)
@@ -45,6 +67,7 @@ Chromosome& Chromosome::operator=(const Chromosome& var)
 	m_fitness = var.m_fitness;
 	m_randomSeed = var.m_randomSeed;
 	m_genes = var.m_genes;
+	m_chromsize = var.m_chromsize;
 
 	return *this;
 }
