@@ -133,6 +133,7 @@
     <ClInclude Include="AIController.h" />
     <ClInclude Include="Chromosome.h" />
     <ClInclude Include="Clickable.h" />
+    <ClInclude Include="EpochFileHandler.h" />
     <ClInclude Include="GA.h" />
     <ClInclude Include="GACrossover.h" />
     <ClInclude Include="GAGenMaker.h" />
@@ -155,6 +156,7 @@
     <ClCompile Include="AIController.cpp" />
     <ClCompile Include="Chromosome.cpp" />
     <ClCompile Include="Clickable.cpp" />
+    <ClCompile Include="EpochFileHandler.cpp" />
     <ClCompile Include="GA.cpp" />
     <ClCompile Include="GACrossover.cpp" />
     <ClCompile Include="GAGenMaker.cpp" />

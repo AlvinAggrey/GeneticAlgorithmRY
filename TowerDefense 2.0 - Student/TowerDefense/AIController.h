@@ -2,6 +2,7 @@
 
 #include "Tower.h"
 #include "GA.h"
+#include "EpochFileHandler.h"
 
 class GameController;
 class GameBoard;
@@ -47,5 +48,6 @@ private:
 	bool done;
 
 	Gene m_nextTower;
+	EpochFileHandler fileHandler;
 };
 

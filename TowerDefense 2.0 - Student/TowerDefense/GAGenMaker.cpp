@@ -109,7 +109,9 @@ std::vector<individual> GAGenMaker::CreateGen()
     std::vector<individual> gen;
     for (int i = 0; i < m_popSize; i++)
     {
-        gen.push_back(individual(Chromosome(m_gen()), false));
+        Chromosome chrom(m_gen());
+        chrom.Init(m_chromSize);
+        gen.push_back(individual(chrom, false));
     }
 
     return gen;
@@ -121,7 +123,9 @@ std::vector<individual> GAGenMaker::NextGen(std::vector<individual> population)
     
     for (int i = m_childAmount; i < m_popSize; i++)
     {
-        nextGen.push_back(individual(Chromosome(m_gen()), false));
+        Chromosome chrom(m_gen());
+        chrom.Init(m_chromSize);
+        nextGen.push_back(individual(chrom, false));
     }
 
 

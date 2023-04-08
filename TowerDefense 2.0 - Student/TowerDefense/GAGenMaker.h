@@ -21,6 +21,7 @@ private:
 	GASelection m_selector;
 	GACrossover m_geneCrossover;
 
+	int m_chromSize = 6;
 	int m_selectNum;
 	int m_matingPoolSize;
 	int m_tournySize;

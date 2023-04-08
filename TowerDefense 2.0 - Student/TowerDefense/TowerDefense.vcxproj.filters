@@ -58,6 +58,7 @@
     <ClCompile Include="GASelection.cpp">
       <Filter>AI Code</Filter>
     </ClCompile>
+    <ClCompile Include="EpochFileHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Clickable.h">
@@ -120,6 +121,7 @@
     <ClInclude Include="GASelection.h">
       <Filter>AI Code</Filter>
     </ClInclude>
+    <ClInclude Include="EpochFileHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Game Headers">

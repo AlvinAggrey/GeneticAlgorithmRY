@@ -15,9 +15,10 @@ AIController::AIController()
 	m_gameBoard = nullptr;
 	m_Timer = nullptr;
 	m_gameState = nullptr;
-	ga = GA(2,2,1,SelectionMethod::Roulette, CrossoverMethod::OnePoint);
+	ga = GA(5,10,10,SelectionMethod::Roulette, CrossoverMethod::OnePoint);
 	ga.Init();
-	ga.UseLinearRanked({1,1});
+	ga.UseRoulette(5);
+	//ga.UseLinearRanked({1,1});
 	ga.UseOnePoint();
 }
 
@@ -37,6 +38,13 @@ void AIController::gameOver()
 
 	if (ga.CheckIsDone())
 	{
+		std::vector<individual> lastGen = ga.CurGen();
+		std::vector<Chromosome> epoch;
+		for (int i = 0; i < lastGen.size(); i++)
+		{
+			epoch.push_back(lastGen[i].first);
+		}
+		fileHandler.WriteGenToFile(epoch);
 		done = true;
 	}
 	else if (ga.CheckTestAllPop())
