@@ -155,13 +155,13 @@ void GAGenMaker::UseRoulette(int matingPoolSize)
     m_matingPoolSize = matingPoolSize;
 }
 
-void GAGenMaker::UseLinearRanked(std::initializer_list<int> bandDists)
+void GAGenMaker::UseLinearRanked(std::vector<int> bandDists)
 {
     m_selectionMethod = SelectionMethod::LinearRanked;
     m_bandDists = bandDists;
 }
 
-void GAGenMaker::UseElitist(std::initializer_list<int> bandDists)
+void GAGenMaker::UseElitist(std::vector<int> bandDists)
 {
     m_selectionMethod = SelectionMethod::Elitist;
     m_bandDists = bandDists;

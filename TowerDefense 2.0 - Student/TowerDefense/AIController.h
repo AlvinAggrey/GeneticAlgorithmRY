@@ -49,5 +49,29 @@ private:
 
 	Gene m_nextTower;
 	EpochFileHandler fileHandler;
+
+	void MainMenu();
+	int FindStringEnd(std::ifstream* ifs, std::string str);
+	void SaveSettings(int genNum, int popNum, int childAmount,
+		int selectionMethod, int crossoverMethod, float mutationChance,
+		float selectNum, float matingPoolSize, float tournySize, std::vector<int> bandDists);
+	void LoadSettings();
+	void SettingsPrompt();
+	bool LoadEpochPrompt();
+
+	
+	std::string m_dataTags[10] =
+	{
+		"generation number:",
+		"population number:",
+		"children number:",
+		"selection method:",
+		"crossover method:",
+		"mutation chance:",
+		"selection number:",
+		"mating pool number:",
+		"tournament size number:",
+		"band distribution:"
+	};
 };
 

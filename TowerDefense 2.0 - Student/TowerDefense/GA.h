@@ -42,14 +42,15 @@ public:
     GA operator=(const GA& other);
     //Control GA
     void Init();
+    //use epoch to make init gen
+    void Init(std::vector<individual> epoch);
     void NextIndiv();
     void NextGen();
-
     //Set Properties
     void UseRanked(int selectNum, int matingPoolSize);
     void UseRoulette(int matingPoolSize);
-    void UseLinearRanked(std::initializer_list<int> bandDists);
-    void UseElitist(std::initializer_list<int> bandDists);
+    void UseLinearRanked(std::vector<int> bandDists);
+    void UseElitist(std::vector<int> bandDists);
     void UseTournament(int matingPoolSize);
     void UseStochastic(int matingPoolSize, int tournySize);
     

@@ -59,6 +59,12 @@ void GA::Init()
 	m_generations.push_back(m_genMaker.CreateGen());
 }
 
+void GA::Init(std::vector<individual> epoch)
+{
+    std::vector<individual> initGen = m_genMaker.NextGen(epoch);
+    m_generations.push_back(initGen);
+}
+
 void GA::NextIndiv()
 {
     m_curIndivIndex++;
@@ -92,16 +98,16 @@ void GA::UseRanked(int selectNum, int matingPoolSize)
 void GA::UseRoulette(int matingPoolSize)
 {
     m_selectionMethod = SelectionMethod::Roulette;
-    m_genMaker.UseRoulette(m_matingPoolSize);
+    m_genMaker.UseRoulette(matingPoolSize);
 }
 
-void GA::UseLinearRanked(std::initializer_list<int> bandDists)
+void GA::UseLinearRanked(std::vector<int> bandDists)
 {
     m_selectionMethod = SelectionMethod::LinearRanked;
     m_genMaker.UseLinearRanked(bandDists);
 }
 
-void GA::UseElitist(std::initializer_list<int> bandDists)
+void GA::UseElitist(std::vector<int> bandDists)
 {
     m_selectionMethod = SelectionMethod::Elitist;
     m_genMaker.UseElitist(bandDists);
