@@ -43,6 +43,22 @@
     <ClCompile Include="AIController.cpp">
       <Filter>AI Code</Filter>
     </ClCompile>
+    <ClCompile Include="Chromosome.cpp">
+      <Filter>AI Code</Filter>
+    </ClCompile>
+    <ClCompile Include="GA.cpp">
+      <Filter>AI Code</Filter>
+    </ClCompile>
+    <ClCompile Include="GACrossover.cpp">
+      <Filter>AI Code</Filter>
+    </ClCompile>
+    <ClCompile Include="GAGenMaker.cpp">
+      <Filter>AI Code</Filter>
+    </ClCompile>
+    <ClCompile Include="GASelection.cpp">
+      <Filter>AI Code</Filter>
+    </ClCompile>
+    <ClCompile Include="EpochFileHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Clickable.h">
@@ -90,6 +106,22 @@
     <ClInclude Include="AIController.h">
       <Filter>AI Code</Filter>
     </ClInclude>
+    <ClInclude Include="Chromosome.h">
+      <Filter>AI Code</Filter>
+    </ClInclude>
+    <ClInclude Include="GA.h">
+      <Filter>AI Code</Filter>
+    </ClInclude>
+    <ClInclude Include="GACrossover.h">
+      <Filter>AI Code</Filter>
+    </ClInclude>
+    <ClInclude Include="GAGenMaker.h">
+      <Filter>AI Code</Filter>
+    </ClInclude>
+    <ClInclude Include="GASelection.h">
+      <Filter>AI Code</Filter>
+    </ClInclude>
+    <ClInclude Include="EpochFileHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Game Headers">

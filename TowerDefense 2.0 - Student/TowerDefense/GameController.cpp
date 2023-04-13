@@ -40,8 +40,8 @@ const std::vector<Vector2f> path = { Vector2f(15, 0), Vector2f(15, 4), Vector2f(
 bool debug;
 
 GameBoard::GameBoard(GameState* _gameState, TowerController* _towerController,
-		int _width) :
-		gameState(_gameState), towerController(_towerController), width(_width) {
+		int _width, AIController* _aIController) :
+		gameState(_gameState), towerController(_towerController), width(_width), aIController(_aIController) {
 
 	
 	
@@ -146,6 +146,23 @@ bool GameBoard::towerIsPurchasable(TowerType type) {
 		}
 	}
 	return false;
+}
+
+void GameBoard::CheckInput(sf::Event event, sf::Vector2i mousePos)
+{
+	//toggle debug
+	if ((event.type == sf::Event::KeyReleased)
+		&& (event.mouseButton.button == sf::Keyboard::D))
+	{
+		if (debug)
+		{
+			debug = false;
+		}
+		else if (!debug)
+		{
+			debug = true;
+		}
+	}
 }
 
 bool GameBoard::addTower(TowerType type, int gridX, int gridY)
@@ -255,6 +272,8 @@ void GameBoard::render(sf::RenderWindow* window) {
 				gameState->getTowerProps(type)["range"], window);
 		renderShadow(mousePos.x, mousePos.y, 2, window);
 	}
+	
+	//aIController->RenderNextTowerPos(2, font, shadowTile, window);
 }
 
 void GameBoard::renderLabels(sf::RenderWindow* window) {
@@ -329,7 +348,7 @@ void cleanGame(Timer** clk, GameState** gameState, GameMenuController** gameMenu
 }
 
 void resetGame(Timer** clk, GameState** gameState, GameMenuController** gameMenuController, TowerController** towerController, 
-				MonsterController** monsterController, GameBoard** gameBoard, TowerAndMonsterController** attackController, sf::RenderWindow* window)
+				MonsterController** monsterController, GameBoard** gameBoard, TowerAndMonsterController** attackController, sf::RenderWindow* window, AIController** aIController)
 {
 	*clk = new Timer();
 	*gameState = new GameState(*clk);
@@ -338,7 +357,7 @@ void resetGame(Timer** clk, GameState** gameState, GameMenuController** gameMenu
 	*towerController = new TowerController(window, *gameState);
 	*monsterController = new MonsterController(window, *gameState,
 		path);
-	*gameBoard = new GameBoard(*gameState, *towerController, (int)(*gameMenuController)->getMenuPos().x);
+	*gameBoard = new GameBoard(*gameState, *towerController, (int)(*gameMenuController)->getMenuPos().x, *aIController);
 
 	*attackController = new TowerAndMonsterController(
 		window, *gameState, *monsterController, (*towerController)->getTowerVec(),
@@ -354,7 +373,7 @@ int main() {
 	//window->setFramerateLimit(0);
 	//window->setVerticalSyncEnabled(false);
 
-	AIController aIController;
+	AIController* aIController = new AIController();
 	
 	Timer* clk;
 	GameState* gameState;
@@ -363,12 +382,12 @@ int main() {
 	MonsterController* monsterController;
 	GameBoard* gameBoard;
 	TowerAndMonsterController* attackController;
-	resetGame(&clk, &gameState, &gameMenuController, &towerController, &monsterController, &gameBoard, &attackController, window);
+	resetGame(&clk, &gameState, &gameMenuController, &towerController, &monsterController, &gameBoard, &attackController, window, &aIController);
 	//m_AIController.setGameController()
-	aIController.setGameBoard(gameBoard);
-	aIController.setTimer(clk);
-	aIController.setGameState(gameState);
-	aIController.setupBoard();
+	aIController->setGameBoard(gameBoard);
+	aIController->setTimer(clk);
+	aIController->setGameState(gameState);
+	aIController->setupBoard();
 
 	
 
@@ -415,6 +434,7 @@ int main() {
 				gameMenuController->process(gameBoard->event, mousePos);
 				gameBoard->process(gameBoard->event, mousePos);
 				towerController->process(gameBoard->event, mousePos);
+				gameBoard->CheckInput(gameBoard->event, mousePos);
 			}
 		}
 
@@ -424,6 +444,7 @@ int main() {
 		if (clk->newTick()) {
 			//update
 			monsterController->update();
+
 			attackController->update();
 		}
 
@@ -443,7 +464,7 @@ int main() {
 		gameMenuController->render();
 		attackController->render();
 
-		aIController.update();
+		aIController->update();
 
 		gameBoard->renderLabels(window);
 		if (debug) {
@@ -451,22 +472,28 @@ int main() {
 			gameBoard->text.setFont(gameBoard->font);
 			gameBoard->text.setPosition(float(mousePos.x), float(mousePos.y));
 			window->draw(gameBoard->text);
+
+			aIController->RenderNextTowerPos(2, gameBoard->font, gameBoard->shadowTile, window);
+
+			aIController->RenderGenerationLabels(30, gameBoard->font, window);
 		}
 
 		if (gameState->getHealth() <= 0) {
 			clk->stop();
-			aIController.gameOver();
+			aIController->gameOver();
 			//deathLoop(window, gameBoard->event);
 			cleanGame(&clk, &gameState, &gameMenuController, &towerController, &monsterController, &gameBoard, &attackController);
-			resetGame(&clk, &gameState, &gameMenuController, &towerController, &monsterController, &gameBoard, &attackController, window);
-			aIController.setGameBoard(gameBoard);
-			aIController.setTimer(clk);
-			aIController.setGameState(gameState);
-			aIController.setupBoard();
+			resetGame(&clk, &gameState, &gameMenuController, &towerController, &monsterController, &gameBoard, &attackController, window, &aIController);
+			aIController->setGameBoard(gameBoard);
+			aIController->setTimer(clk);
+			aIController->setGameState(gameState);
+			aIController->setupBoard();
 			//return 0;
 		}
 		window->display();
 	} // End of main game loop
+
+	delete aIController; aIController = nullptr;
 
 	delete gameBoard;
 	gameBoard = nullptr;

@@ -8,6 +8,7 @@
 #include "GameState.h"
 #include "Tower.h"
 #include "TowerController.h"
+#include "AIController.h"
 
 
 // Game Controller keeps all Game State Variables Running and Updated
@@ -30,15 +31,16 @@ class GameBoard {
 private:
 	GameState* gameState;
 	TowerController* towerController;
+	AIController* aIController;
 	int width;
 
+public:
 	// Helper functions
 	bool gridSpaceAvailable(int gridX, int gridY);
 	bool towerIsPurchasable(TowerType type);
 
-public:
 	GameBoard(GameState* gameState, TowerController* towerController,
-			int widthInPixels);
+			int widthInPixels, AIController* _aIController);
 	~GameBoard();
 
 	bool validatePos(int mouseX, int mouseY, int range);
@@ -68,6 +70,7 @@ public:
 	sf::Event event;
 
 	
+	void CheckInput(sf::Event event, sf::Vector2i mousePos);
 
 	
 };
