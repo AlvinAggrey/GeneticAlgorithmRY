@@ -46,6 +46,7 @@ private:
 	int curChromIndex;
 	int m_geneStep;
 	bool done;
+	int m_unplaceableTowercount;
 
 	Gene m_nextTower;
 	EpochFileHandler fileHandler;

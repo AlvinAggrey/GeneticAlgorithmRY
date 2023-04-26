@@ -19,6 +19,31 @@ GAGenMaker::GAGenMaker(SelectionMethod selectionMethod, CrossoverMethod crossove
 
     m_gen.seed(m_rd());
 }
+//not completely perfect
+Chromosome GAGenMaker::Mutate(Chromosome chrom)
+{
+    Chromosome mutatedChrom = chrom;
+    Chromosome randChrom;
+    randChrom.Init(m_chromSize);
+    std::uniform_int_distribution<int> distGene(0, chrom.ChromSize());
+    int geneElement = distGene(m_gen);
+    std::uniform_int_distribution<int> dist(0, 3);
+    //std::uniform_int_distribution<int> distTower(1, 4);
+
+    switch (dist(m_gen))
+    {
+    case 0:
+        mutatedChrom.Genes().at(geneElement).m_towerType = randChrom.Genes().at(0).m_towerType;
+        break;
+    case 1:
+        mutatedChrom.Genes().at(geneElement).m_position[0] = randChrom.Genes().at(0).m_position[0];
+        break;
+    case 2:
+        mutatedChrom.Genes().at(geneElement).m_position[1] = randChrom.Genes().at(0).m_position[1];
+        break;
+    }
+    return mutatedChrom;
+}
 std::vector<individual> GAGenMaker::Selection(std::vector<individual> population)
 {
     std::vector<individual> matingPool;
@@ -70,15 +95,33 @@ std::vector<individual> GAGenMaker::Crossover(std::vector<individual> matingPool
         Chromosome parent1 = matingPool[index1].first;
         Chromosome parent2 = matingPool[index2].first;
 
+        Chromosome child;
+
         switch (m_crossoverMethod)
         {
         case CrossoverMethod::OnePoint:
         {
-            Chromosome child = m_geneCrossover.OnePoint(parent1, parent2);
-            children.push_back(individual(child, false));
+            child = m_geneCrossover.OnePoint(parent1, parent2);
             break;
         }
+        case CrossoverMethod::TwoPoint:
+        {
+            child = m_geneCrossover.TwoPoint(parent1, parent2);
+            break;
         }
+        default:
+            child = m_geneCrossover.OnePoint(parent1, parent2);
+            break;
+        }
+
+        std::uniform_real_distribution<float> mutaionDist(0, 1);
+        float chance = mutaionDist(m_gen);
+
+        if (chance <= m_mutationChance)
+        {
+            child = Mutate(child);
+        }
+        children.push_back(individual(child, false));
     }
     return children;
 }
@@ -130,6 +173,11 @@ std::vector<individual> GAGenMaker::NextGen(std::vector<individual> population)
 
 
     return nextGen;
+}
+
+int GAGenMaker::GetChromSize()
+{
+    return m_chromSize;
 }
 
 //void GAGenMaker::SetSelectionMethod(SelectionMethod selectionMethod)

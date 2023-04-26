@@ -69,6 +69,7 @@ public:
     std::vector<individual>& CurGen();
     int CurIndivIndex();
     int CurGenIndex();
+    int GetChromSize();
 
     //Print
     void PrintGen(int index);

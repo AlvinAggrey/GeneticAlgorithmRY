@@ -336,7 +336,16 @@ void AIController::gameOver()
 	int waveReached = m_gameState->getCurrentWave();
 	//int avgkillCount = m_gameState->getMonsterEliminated()/ waveReached;
 	//int tamsLeft = ;
-	int fitness = recordScore() + m_gameState->getTams();
+	int fitness = 0;
+	if (m_unplaceableTowercount >= ga.GetChromSize())
+	{
+		fitness = 0;
+	}
+	else
+	{
+		fitness = recordScore() + m_gameState->getTams() - (m_unplaceableTowercount *= 10);
+	}
+
 	ga.CurIndiv().first.m_fitness = fitness;
 	ga.CurIndiv().second = true;
 
@@ -360,6 +369,7 @@ void AIController::gameOver()
 		ga.NextIndiv();
 	}
 	
+	m_unplaceableTowercount = 0;
 	ResetGeneStep();
 }
 
@@ -416,10 +426,20 @@ void AIController::MakeMove()
 		Chromosome chrom  = ga.CurIndiv().first;
 		Gene gene = chrom.Genes()[m_geneStep];
 		m_nextTower = gene;
-		if (addTower((TowerType)gene.m_towerType, gene.m_position[0],gene.m_position[1]))
+		if (m_gameBoard->gridSpaceAvailable(gene.m_position[0], gene.m_position[1]) == true)
 		{
+			if (addTower((TowerType)gene.m_towerType, gene.m_position[0],gene.m_position[1]))
+			{
+				m_geneStep++;
+			}
+		}
+		else
+		{
+			m_unplaceableTowercount++;
+			//skip
 			m_geneStep++;
 		}
+
 	}
 }
 void AIController::RenderNextTowerPos(int range, sf::Font orderFont, sf::RectangleShape highlight, sf::RenderWindow* window)

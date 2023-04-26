@@ -1,10 +1,10 @@
-generation number: 10
-population number: 10
-children number: 6
+generation number: 15
+population number: 15
+children number: 4
 selection method: 2
-crossover method: 1
+crossover method: 2
 mutation chance: 0.2
 selection number: 5
 mating pool number: 6
-tournament size number: 0
+tournament size number: 7
 band distribution: []

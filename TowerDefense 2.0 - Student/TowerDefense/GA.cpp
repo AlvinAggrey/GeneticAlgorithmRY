@@ -183,6 +183,11 @@ int GA::CurGenIndex()
     return m_curGenIndex;
 }
 
+int GA::GetChromSize()
+{
+    return m_genMaker.GetChromSize();
+}
+
 void GA::PrintGen(int index)
 {
     std::cout << "Generation: " << index << std::endl;
