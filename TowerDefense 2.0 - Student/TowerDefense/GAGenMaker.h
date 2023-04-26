@@ -13,6 +13,8 @@ public:
 	GAGenMaker();
 	GAGenMaker(SelectionMethod selectionMethod, CrossoverMethod crossoverMethod, int popSize, int childAmount);
 
+	Chromosome Mutate(Chromosome chrom);
+
 private:
 	std::random_device m_rd;
 	std::mt19937 m_gen;
@@ -20,6 +22,7 @@ private:
 	int m_childAmount;
 	GASelection m_selector;
 	GACrossover m_geneCrossover;
+	int m_mutationChance = 0.2;
 
 	int m_chromSize = 6;
 	int m_selectNum;
@@ -40,6 +43,7 @@ public:
 	//returns next generation
 	std::vector<individual> NextGen(std::vector<individual> population);
 
+	int GetChromSize();
 	//void SetSelectionMethod(SelectionMethod method);
 	//void SetSelectionMethod(SelectionMethod method);
 

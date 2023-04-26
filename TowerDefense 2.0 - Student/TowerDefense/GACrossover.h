@@ -7,6 +7,7 @@ enum class CrossoverMethod
 {
 	None,
 	OnePoint,
+	TwoPoint
 };
 class GACrossover
 {
@@ -21,5 +22,6 @@ public:
 
 	//std::random_device rd;
 	Chromosome OnePoint(Chromosome parent1, Chromosome parent2);
+	Chromosome TwoPoint(Chromosome parent1, Chromosome parent2);
 };
 

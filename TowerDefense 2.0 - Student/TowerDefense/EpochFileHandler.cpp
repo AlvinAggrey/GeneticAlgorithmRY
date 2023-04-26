@@ -1,4 +1,6 @@
 #include "EpochFileHandler.h"
+#include <chrono>
+#include <ctime>
 
 
 void EpochFileHandler::WriteGenToFile(std::vector<Chromosome> generation, std::string filename)
@@ -6,8 +8,10 @@ void EpochFileHandler::WriteGenToFile(std::vector<Chromosome> generation, std::s
     Chromosome chrom;
     std::ofstream of;
     of.open(filename, std::ofstream::app | std::ofstream::out);
-    std::stringstream data;
+    std::stringstream data;auto curTimepoint = std::chrono::system_clock::now();
 
+    //std::time_t time = std::chrono::system_clock::to_time_t(curTimepoint);
+    //data << std::endl << std::ctime(&time) << std::endl;
     //convert to format
     data << "\n{\n";
     for (int i = 0; i < generation.size(); i++)
