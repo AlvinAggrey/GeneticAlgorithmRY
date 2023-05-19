@@ -11,7 +11,7 @@ class GAGenMaker
 {
 public:
 	GAGenMaker();
-	GAGenMaker(SelectionMethod selectionMethod, CrossoverMethod crossoverMethod, int popSize, int childAmount);
+	GAGenMaker(SelectionMethod selectionMethod, CrossoverMethod crossoverMethod, int popSize, int childAmount, int m_chromSize);
 
 	Chromosome Mutate(Chromosome chrom);
 
@@ -53,7 +53,7 @@ public:
 	void UseRoulette(int matingPoolSize);
 	void UseLinearRanked(std::vector<int> bandDists);
 	void UseElitist(std::vector<int> bandDists);
-	void UseTournament(int matingPoolSize);
+	void UseTournament(int matingPoolSize, int tournySize);
 	void UseStochastic(int matingPoolSize, int tournySize);
 
 	void UseOnePoint();

@@ -10,13 +10,13 @@ GAGenMaker::GAGenMaker()
     m_gen.seed(m_rd());
 }
 
-GAGenMaker::GAGenMaker(SelectionMethod selectionMethod, CrossoverMethod crossoverMethod, int popSize, int childAmount)
+GAGenMaker::GAGenMaker(SelectionMethod selectionMethod, CrossoverMethod crossoverMethod, int popSize, int childAmount, int chromSize)
 {
     m_selectionMethod = selectionMethod;
     m_crossoverMethod = crossoverMethod;
     m_popSize = popSize;
     m_childAmount = childAmount;
-
+    m_chromSize = chromSize;
     m_gen.seed(m_rd());
 }
 //not completely perfect
@@ -144,6 +144,7 @@ GAGenMaker GAGenMaker::operator=(const GAGenMaker& other)
     m_geneCrossover = other.m_geneCrossover;
     m_selectionMethod = other.m_selectionMethod;
     m_crossoverMethod = other.m_crossoverMethod;
+    m_chromSize = other.m_chromSize;
     
     return *this;
 }
@@ -163,14 +164,24 @@ std::vector<individual> GAGenMaker::NextGen(std::vector<individual> population)
 {
     std::vector<individual> nextGen;
     nextGen = Crossover( Selection(population), m_childAmount);
-    
-    for (int i = m_childAmount; i < m_popSize; i++)
+
+    for (int i = m_childAmount; i < m_popSize-1; i++)
     {
         Chromosome chrom(m_gen());
         chrom.Init(m_chromSize);
         nextGen.push_back(individual(chrom, false));
     }
 
+    //elitist
+    Chromosome elite;
+    for (auto indiv : population)
+    {
+        if (indiv.first.m_fitness > elite.m_fitness)
+        {
+            elite = indiv.first;
+        }
+    }
+    nextGen.push_back(individual(elite, false));
 
     return nextGen;
 }
@@ -215,10 +226,11 @@ void GAGenMaker::UseElitist(std::vector<int> bandDists)
     m_bandDists = bandDists;
 }
 
-void GAGenMaker::UseTournament(int matingPoolSize)
+void GAGenMaker::UseTournament(int matingPoolSize, int tournySize)
 {
     m_selectionMethod = SelectionMethod::Tournament;
     m_matingPoolSize = matingPoolSize;
+    m_tournySize = tournySize;
 }
 
 void GAGenMaker::UseStochastic(int matingPoolSize, int tournySize)

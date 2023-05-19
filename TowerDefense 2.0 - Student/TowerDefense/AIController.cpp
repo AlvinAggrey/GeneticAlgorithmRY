@@ -130,7 +130,7 @@ void AIController::LoadSettings()
 			}
 		}
 		
-		ga = GA(genNum,popNum,childAmount,selectionMethod,crossoverMethod);
+		ga = GA(genNum,popNum,childAmount,8,selectionMethod,crossoverMethod);
 		
 		switch (selectionMethod)
 		{
@@ -147,7 +147,7 @@ void AIController::LoadSettings()
 			ga.UseElitist(bandDists);
 			break;
 		case SelectionMethod::Tournament:
-			ga.UseTournament(matingPoolSize);
+			ga.UseTournament(matingPoolSize, tournySize);
 			break;
 		case SelectionMethod::Stochastic:
 			ga.UseStochastic(matingPoolSize, tournySize);
@@ -322,8 +322,8 @@ AIController::AIController()
 	m_Timer = nullptr;
 	m_gameState = nullptr;
 	//ga = GA(2,2,2,SelectionMethod::Roulette, CrossoverMethod::OnePoint);
-	MainMenu();
 	LoadSettings();
+	MainMenu();
 }
 
 AIController::~AIController()
@@ -366,6 +366,10 @@ void AIController::gameOver()
 	}
 	else
 	{
+		if (recordScore() >= 200)
+		{
+			fileHandler.WriteGenToFile({ ga.CurIndiv().first }, "Highscorers.txt");
+		}
 		ga.NextIndiv();
 	}
 	

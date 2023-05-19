@@ -18,6 +18,7 @@ private:
     int m_curGenIndex;
     int m_curIndivIndex;
     int m_childAmount;
+    int m_chromSize;
 
     bool m_done;
 
@@ -36,7 +37,7 @@ private:
 
 public:
     GA ();
-    GA(int gens, int popSize, int childAmount, SelectionMethod selectionMethod, CrossoverMethod crossoverMethod);
+    GA(int gens, int popSize, int childAmount, int chromSize, SelectionMethod selectionMethod, CrossoverMethod crossoverMethod);
     
     GA(const GA& other);
     GA operator=(const GA& other);
@@ -51,7 +52,7 @@ public:
     void UseRoulette(int matingPoolSize);
     void UseLinearRanked(std::vector<int> bandDists);
     void UseElitist(std::vector<int> bandDists);
-    void UseTournament(int matingPoolSize);
+    void UseTournament(int matingPoolSize, int tournySize);
     void UseStochastic(int matingPoolSize, int tournySize);
     
     void UseOnePoint();

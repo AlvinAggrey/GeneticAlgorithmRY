@@ -10,11 +10,11 @@ GA::GA()
     m_curIndivIndex = 0;
     m_done = false;
     m_gen.seed(m_rd());
-
-    m_genMaker = GAGenMaker(SelectionMethod::Roulette, CrossoverMethod::OnePoint,m_popSize, m_childAmount);
+    m_chromSize = 8;
+    m_genMaker = GAGenMaker(SelectionMethod::Roulette, CrossoverMethod::OnePoint,m_popSize, m_childAmount, m_chromSize);
 }
 
-GA::GA(int gens, int popSize, int childAmount, SelectionMethod selectionMethod, CrossoverMethod crossoverMethod)
+GA::GA(int gens, int popSize, int childAmount, int chromSize,SelectionMethod selectionMethod, CrossoverMethod crossoverMethod)
 {
     m_genAmount = gens;
     m_popSize = popSize; 
@@ -23,8 +23,8 @@ GA::GA(int gens, int popSize, int childAmount, SelectionMethod selectionMethod, 
     m_curIndivIndex = 0;
     m_done = false;
     m_gen.seed(m_rd());
-
-    m_genMaker = GAGenMaker(selectionMethod, crossoverMethod, m_popSize, m_childAmount);
+    m_chromSize = chromSize;
+    m_genMaker = GAGenMaker(selectionMethod, crossoverMethod, m_popSize, m_childAmount, m_chromSize);
 }
 
 GA::GA(const GA& other)
@@ -36,6 +36,7 @@ GA::GA(const GA& other)
     m_curIndivIndex = other.m_curIndivIndex;
     m_done = other.m_done;
     m_gen = other.m_gen;
+    m_chromSize = other.m_chromSize;
 
     m_genMaker = other.m_genMaker;
 }
@@ -49,6 +50,7 @@ GA GA::operator=(const GA& other)
     m_curIndivIndex = other.m_curIndivIndex;
     m_done = other.m_done;
     m_gen = other.m_gen;
+    m_chromSize = other.m_chromSize;
 
     m_genMaker = other.m_genMaker;
     return *this;
@@ -113,10 +115,10 @@ void GA::UseElitist(std::vector<int> bandDists)
     m_genMaker.UseElitist(bandDists);
 }
 
-void GA::UseTournament(int matingPoolSize)
+void GA::UseTournament(int matingPoolSize, int tournySize)
 {
     m_selectionMethod = SelectionMethod::Tournament;
-    m_genMaker.UseTournament(matingPoolSize);
+    m_genMaker.UseTournament(matingPoolSize, tournySize);
 }
 
 void GA::UseStochastic(int matingPoolSize, int tournySize)
